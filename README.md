@@ -3,6 +3,22 @@
 
 ## 使用步骤 Usage
 
+### 添加依赖
+
+添加以下依赖项即可：
+
+```gradle
+implementation 'xyz.yorek.glide:framesequence-integration:1.0.0-beta05'
+```
+
+若无法下载到该文件，请添加如下仓库地址：
+
+```gradle
+maven { url "https://dl.bintray.com/yorekliu/maven" }
+```
+
+### 在代码中使用
+
 集成`framesequence`完毕后，使用如下方式加载 gif **会**自动替换成 framesequence 解码，此时无需您对业务做任何修改：
 
 ```java

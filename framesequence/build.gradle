@@ -1,5 +1,7 @@
 plugins {
     id 'com.android.library'
+    id 'com.github.dcendents.android-maven'
+    id 'com.jfrog.bintray'
 }
 
 android {
@@ -10,7 +12,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
-        versionName "1.0"
+        versionName version
 
         consumerProguardFiles "consumer-rules.pro"
 
@@ -40,3 +42,123 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+def _artifactId = 'framesequence-integration'
+def _group = 'xyz.yorek.glide'
+group = _group
+version = '1.0.0-beta05'
+project.archivesBaseName = _artifactId
+
+def siteUrl = 'https://github.com/YorekLiu/GlideFrameSequenceIntegration'
+def gitUrl = 'git@github.com:YorekLiu/GlideFrameSequenceIntegration.git'
+def getReleaseRepositoryUrl() {
+    return hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL : readPropertyFromLocalProperties('RELEASE_REPOSITORY_URL')
+}
+def getRepositoryUsername() {
+    return hasProperty('REPOSITORY_USERNAME') ? REPOSITORY_USERNAME : readPropertyFromLocalProperties('REPOSITORY_USERNAME')
+}
+def getRepositoryPassword() {
+    return hasProperty('REPOSITORY_PASSWORD') ? REPOSITORY_PASSWORD : readPropertyFromLocalProperties('REPOSITORY_PASSWORD')
+}
+def readPropertyFromLocalProperties(String key) {
+    Properties properties = new Properties()
+    try {
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    } catch (Exception e) {
+        println("load local properties failed msg:${e.message}")
+    }
+    return properties.getProperty(key)
+}
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier "sources"
+}
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    failOnError false
+}
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+//task symbolJar(type: Jar, dependsOn: 'build') {
+//    classifier = "so-symbols"
+//    from file("build/intermediates/cmake/release/obj/")
+//    boolean hasNativeBuildTask = false
+//    tasks.each { task ->
+//        if (task.getName().startsWith("externalNativeBuild")) {
+//            hasNativeBuildTask = true
+//        }
+//    }
+//
+//    if (!hasNativeBuildTask) {
+//        return
+//    }
+//
+//    if (hasFlavors) {
+//        variant.productFlavors.each { flavor ->
+//            from file("build/intermediates/cmake/${flavor.name}/release/obj/")
+//        }
+//    } else {
+//        from file("build/intermediates/cmake/release/obj/")
+//    }
+//}
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+//    archives symbolJar
+}
+install {
+    repositories.mavenInstaller {
+        pom {
+            project {
+                packaging 'aar'
+                name 'Glide FrameSequence Integration'
+                description 'Glide framesequence integration'
+                url siteUrl
+
+                groupId _group
+                artifactId _artifactId
+                version version
+
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'yorekliu'
+                        name 'Yorek Liu'
+                        email 'lyytogether@gmail.com'
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+                }
+            }
+        }
+    }
+}
+bintray {
+    user = getRepositoryUsername()
+    key = getRepositoryPassword()
+
+    configurations = ['archives']
+    pkg {
+        repo = "maven"
+        name = "GlideFrameSequenceIntegration"
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = ["Apache-2.0"]
+        publish = true
+        publicDownloadNumbers = true
+    }
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
