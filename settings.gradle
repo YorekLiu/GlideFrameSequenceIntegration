@@ -1,0 +1,3 @@
+include ':framesequence'
+include ':app'
+rootProject.name = "GlideFrameSequenceIntegration"

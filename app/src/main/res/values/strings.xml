@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">GlideFrameSequenceIntegration</string>
+
+    <string-array name="entries_spinner">
+        <item>144x144</item>
+        <item>336x336</item>
+    </string-array>
+</resources>

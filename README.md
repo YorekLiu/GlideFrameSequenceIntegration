@@ -1,2 +1,62 @@
 # GlideFrameSequenceIntegration
-A library to replace the default glide gif decoder, based on giflib and FrameSequence with downsampled. 结合giflib和采样特性的FrameSequence的native gif解码器，用以取代Glide默认的Gif解码器。
+结合 giflib 和带降采特性的 framesequence 的 native gif 解码器，用以取代 glide 默认的 gif 解码器。
+
+## 使用步骤 Usage
+
+集成`framesequence`完毕后，使用如下方式加载 gif **会**自动替换成 framesequence 解码，此时无需您对业务做任何修改：
+
+```java
+Glide.with(xx).load()
+GlideApp.with(xx).load()
+```
+
+
+
+使用如下方式**不会**自动替换，因为您已经显示申明使用了 glide 默认的 gif 解码器：
+
+```java
+Glide.with(xx).asGif().load()           // 1
+GlideApp.with(xx).asGif().load()        // 2
+```
+
+此时，对于1，您可以选择去掉`asGif()`语句。对于2，您也可以选择去掉`asGif()`语句，或者使用 [Generated API](https://bumptech.github.io/glide/doc/generatedapi.html) 将`asGif()`替换成`asFrameSequence()`来显示调用使用 framesequence 解码器。
+
+## 原理 
+
+### integration原理
+
+Glide 提供了组件的注册管理器`Registry`，这允许我们对 Glide 里面的内置的一些加载、解码、编码逻辑的组件进行扩展、替换。  
+
+本库将 framesequence 相关的 decoder 插入到了 gif 解码桶的队首，这样就会优先调用 framesequence 的解码器，从而达到了替换 glide 内置 gif 解码器的目的。
+
+```java
+@GlideModule
+public final class FrameSequenceLibraryModule extends LibraryGlideModule {
+    @Override
+    public void registerComponents(@NonNull Context context, @NonNull Glide glide,
+                                   @NonNull Registry registry) {
+        // insert frame sequence decoder to head to replace glide default gif decoder
+        ResourceDecoder<ByteBuffer, FrameSequenceDrawable> byteBufferGifLibDecoder =
+                new ByteBufferFrameSequenceDecoder(registry.getImageHeaderParsers(), glide.getBitmapPool());
+        registry.prepend(Registry.BUCKET_GIF, InputStream.class, FrameSequenceDrawable.class, new StreamFrameSequenceDecoder(registry.getImageHeaderParsers(), byteBufferGifLibDecoder, glide.getArrayPool()))
+                .prepend(Registry.BUCKET_GIF, ByteBuffer.class, FrameSequenceDrawable.class, byteBufferGifLibDecoder);
+    }
+}
+```
+
+关于这部分，可以查看我之前写过的一篇博文:[Glide6——Glide利用AppGlideModule、LibraryGlideModule更改默认配置、扩展Glide功能；GlideApp与Glide的区别在哪？](https://blog.yorek.xyz/android/3rd-library/glide6/)
+
+### framesequence downsample原理
+
+framesequence 底层采用了 giflib 来进行 gif 图片的解析，framesequence 可以理解为 gif 播放的管理者。  
+
+framesequence 会使用双缓冲机制来进行 gif 动画的播放，每一帧实际上都是一个 Bitmap。 framesequence 底层就是将gif 图片帧上的像素赋值到 bitmap 上的一个过程。 而所谓的 downsample，就是在前面赋值的过程中，每隔一定的距离采样一个点，这样就达到了 downsample 的效果。
+
+## Thanks
+
+- [giflib](http://giflib.sourceforge.net/gif_lib.html), 本库使用的是5.2.1版本
+- [Google framesequence](https://android.googlesource.com/platform/frameworks/ex/+/android-9.0.0_r16/framesequence)，本库使用的是android-9.0.0_r16上的源文件
+
+## TODO
+
+Google android-9.0.0_r16 上的 framesequence 还有webp动图的部分，不过也依赖于`libwebp-decode`的这个库，而且也需要实现 downsample 操作，后面有空了考虑整合进去。
