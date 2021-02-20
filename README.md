@@ -1,4 +1,7 @@
-# GlideFrameSequenceIntegration
+# GlideFrameSequenceIntegration 
+
+[ ![Download](https://api.bintray.com/packages/yorekliu/maven/GlideFrameSequenceIntegration/images/download.svg) ](https://bintray.com/yorekliu/maven/GlideFrameSequenceIntegration/_latestVersion)
+
 结合 giflib 和带降采特性的 framesequence 的 native gif 解码器，用以取代 glide 默认的 gif 解码器。
 
 ## 使用步骤 Usage
@@ -8,7 +11,7 @@
 添加以下依赖项即可：
 
 ```gradle
-implementation 'xyz.yorek.glide:framesequence-integration:1.0.0-beta05'
+implementation 'xyz.yorek.glide:framesequence-integration:${lastest-version}'
 ```
 
 若无法下载到该文件，请添加如下仓库地址：
