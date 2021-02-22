@@ -8,13 +8,15 @@
 
 ### 添加依赖
 
-添加以下依赖项即可：
+请先启用 Glide 的 [Generated API](https://bumptech.github.io/glide/doc/generatedapi.html) 相关功能后， 添加以下依赖项即可：
 
 ```gradle
 implementation 'xyz.yorek.glide:framesequence-integration:${lastest-version}'
 ```
 
-若无法下载到该文件，请添加如下仓库地址：
+> 如何简单判断有没有开启 [Generated API](https://bumptech.github.io/glide/doc/generatedapi.html)？一般来说，能在代码中使用`GlideApp`加载图片即可。
+
+若无法下载到本库，请添加如下仓库地址：
 
 ```gradle
 maven { url "https://dl.bintray.com/yorekliu/maven" }
@@ -31,8 +33,6 @@ maven { url "https://dl.bintray.com/yorekliu/maven" }
 Glide.with(xx).load()
 GlideApp.with(xx).load()
 ```
-
-
 
 使用如下方式**不会**自动替换，因为您已经显示申明使用了 glide 默认的 gif 解码器：
 
@@ -66,6 +66,8 @@ public final class FrameSequenceLibraryModule extends LibraryGlideModule {
 }
 ```
 
+为了保证上面这段注册代码能够被 Glide 调用到，请务必保证使用已经启用了 Generated API 的相关功能。
+
 关于这部分，可以查看我之前写过的一篇博文:[Glide6——Glide利用AppGlideModule、LibraryGlideModule更改默认配置、扩展Glide功能；GlideApp与Glide的区别在哪？](https://blog.yorek.xyz/android/3rd-library/glide6/)
 
 ### framesequence downsample原理
@@ -82,3 +84,4 @@ framesequence 会使用双缓冲机制来进行 gif 动画的播放，每一帧�
 ## TODO
 
 Google android-9.0.0_r16 上的 framesequence 还有webp动图的部分，不过也依赖于`libwebp-decode`的这个库，而且也需要实现 downsample 操作，后面有空了考虑整合进去。
+

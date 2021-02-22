@@ -2,22 +2,24 @@ package xyz.yorek.glide.framesequence;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.load.resource.gif.GifDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.MultiTransformation;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,50 +40,44 @@ public class MainActivity extends AppCompatActivity {
 
         final Spinner imageViewSpinner = findViewById(R.id.spinner);
         findViewById(R.id.btnGlideDefault).setOnClickListener(v -> {
-            if (ivGlideDefault.getDrawable() == null) {
-                GlideApp.with(this)
-//                Glide.with(this)
-                        .asGif()
-                        .load(getDrawable(imageViewSpinner))
-                        .listener(new RequestListener<GifDrawable>() {
-                            @Override
-                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<GifDrawable> target, boolean isFirstResource) {
-                                return false;
-                            }
+            //                GlideApp.with(this)
+            Glide.with(this)
+                    .asGif()
+                    .load(getDrawable(imageViewSpinner))
+                    .transform(new MultiTransformation<>(new CenterCrop(), new RoundedCorners(16)))
+                    .listener(new RequestListener<GifDrawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<GifDrawable> target, boolean isFirstResource) {
+                            return false;
+                        }
 
-                            @Override
-                            public boolean onResourceReady(GifDrawable resource, Object model, Target<GifDrawable> target, DataSource dataSource, boolean isFirstResource) {
-                                Log.d("MainActivity", "btnGlideDefault resource class: " + resource.getClass().getSimpleName());
-                                return false;
-                            }
-                        })
-                        .into(ivGlideDefault);
-            } else {
-                GlideApp.with(this).clear(ivGlideDefault);
-            }
+                        @Override
+                        public boolean onResourceReady(GifDrawable resource, Object model, Target<GifDrawable> target, DataSource dataSource, boolean isFirstResource) {
+                            Log.d("MainActivity", "btnGlideDefault resource class: " + resource.getClass().getSimpleName());
+                            return false;
+                        }
+                    })
+                    .into(ivGlideDefault);
         });
         findViewById(R.id.btnFrameSequence).setOnClickListener(v -> {
-            if (ivFrameSequence.getDrawable() == null) {
-//                GlideApp.with(this)
-                Glide.with(this)
+            //                GlideApp.with(this)
+            Glide.with(this)
 //                    .asFrameSequence()
-                        .load(getDrawable(imageViewSpinner))
-                        .listener(new RequestListener<Drawable>() {
-                            @Override
-                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                return false;
-                            }
+                    .load(getDrawable(imageViewSpinner))
+                    .transform(new MultiTransformation<>(new CenterCrop(), new RoundedCorners(16)))
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            return false;
+                        }
 
-                            @Override
-                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                Log.d("MainActivity", "btnFrameSequence resource class: " + resource.getClass().getSimpleName());
-                                return false;
-                            }
-                        })
-                        .into(ivFrameSequence);
-            } else {
-                GlideApp.with(this).clear(ivFrameSequence);
-            }
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            Log.d("MainActivity", "btnFrameSequence resource class: " + resource.getClass().getSimpleName());
+                            return false;
+                        }
+                    })
+                    .into(ivFrameSequence);
         });
     }
 

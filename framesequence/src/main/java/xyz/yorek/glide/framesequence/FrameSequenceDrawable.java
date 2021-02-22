@@ -41,27 +41,32 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
             sDecodingThreadHandler = new Handler(sDecodingThread.getLooper());
         }
     }
-    public static interface OnFinishedListener {
+    public interface OnFinishedListener {
         /**
          * Called when a FrameSequenceDrawable has finished looping.
          *
          * Note that this is will not be called if the drawable is explicitly
          * stopped, or marked invisible.
          */
-        public abstract void onFinished(FrameSequenceDrawable drawable);
+        void onFinished(FrameSequenceDrawable drawable);
     }
-    public static interface BitmapProvider {
+    // update by yorek.liu >> begin
+    public interface OnFrameTransformationListener {
+        Bitmap transfer(Bitmap bitmap);
+    }
+    // update by yorek.liu >> end
+    public interface BitmapProvider {
         /**
          * Called by FrameSequenceDrawable to aquire an 8888 Bitmap with minimum dimensions.
          */
-        public abstract Bitmap acquireBitmap(int minWidth, int minHeight);
+        Bitmap acquireBitmap(int minWidth, int minHeight);
         /**
          * Called by FrameSequenceDrawable to release a Bitmap it no longer needs. The Bitmap
          * will no longer be used at all by the drawable, so it is safe to reuse elsewhere.
          *
          * This method may be called by FrameSequenceDrawable on any thread.
          */
-        public abstract void releaseBitmap(Bitmap bitmap);
+        void releaseBitmap(Bitmap bitmap);
     }
     private static BitmapProvider sAllocatingBitmapProvider = new BitmapProvider() {
         @Override
@@ -79,6 +84,11 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
     public void setOnFinishedListener(OnFinishedListener onFinishedListener) {
         mOnFinishedListener = onFinishedListener;
     }
+    // update by yorek.liu >> begin
+    public void setOnFrameTransformationListener(OnFrameTransformationListener onFrameTransformationListener) {
+        mOnFrameTransformationListener = onFrameTransformationListener;
+    }
+    // update by yorek.liu >> end
     /**
      * Loop a finite number of times, which can be set using setLoopCount. Default to loop once.
      */
@@ -140,6 +150,9 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
     private long mNextSwap;
     private int mNextFrameToDecode;
     private OnFinishedListener mOnFinishedListener;
+    // update by yorek.liu >> begin
+    private OnFrameTransformationListener mOnFrameTransformationListener;
+    // update by yorek.liu >> end
     private RectF mTempRectF = new RectF();
     /**
      * Runs on decoding thread, only modifies mBackBitmap's pixels
@@ -163,6 +176,11 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
             long invalidateTimeMs = 0;
             try {
                 invalidateTimeMs = mFrameSequenceState.getFrame(nextFrame, bitmap, lastFrame, mSampleSize);
+                // update by yorek.liu >> begin
+                if (mOnFrameTransformationListener != null) {
+                    mBackBitmap = mOnFrameTransformationListener.transfer(bitmap);
+                }
+                // update by yorek.liu >> end
             } catch(Exception e) {
                 // Exception during decode: continue, but delay next frame indefinitely.
                 Log.e(TAG, "exception during decode: " + e);

@@ -29,8 +29,11 @@ android {
 }
 
 dependencies {
-//    implementation project(':framesequence')
-    implementation 'xyz.yorek.glide:framesequence-integration:1.0.0-beta06'
+    if (PUBLISH.toBoolean()) {
+        implementation 'xyz.yorek.glide:framesequence-integration:1.0.0-beta07'
+    } else {
+        implementation project(':framesequence')
+    }
 
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
