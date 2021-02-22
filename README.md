@@ -20,6 +20,9 @@ implementation 'xyz.yorek.glide:framesequence-integration:${lastest-version}'
 maven { url "https://dl.bintray.com/yorekliu/maven" }
 ```
 
+对于部分限制了ndk仅为`armeabi`的工程，为了方便这里也提供了对应的so，实际上自行将`armeabi-v7a`中的复制出来，这是一样的效果。  
+文件位于`extra`目录下。
+
 ### 在代码中使用
 
 集成`framesequence`完毕后，使用如下方式加载 gif **会**自动替换成 framesequence 解码，此时无需您对业务做任何修改：
