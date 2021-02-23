@@ -7,18 +7,26 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "xyz.yorek.glide.framesequence"
+        applicationId "xyz.yorek.glide.framesequence.sample"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
 
+        consumerProguardFiles 'consumer-rules.pro'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
+        debug {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -31,9 +39,9 @@ android {
 dependencies {
     if (PUBLISH.toBoolean()) {
         if (GLIDE_V480.toBoolean()) {
-            implementation 'xyz.yorek.glide:framesequence-integration-480:1.0.0-beta08'
+            implementation 'xyz.yorek.glide:framesequence-integration-480:1.0.0-beta09'
         } else {
-            implementation 'xyz.yorek.glide:framesequence-integration:1.0.0-beta08'
+            implementation 'xyz.yorek.glide:framesequence-integration:1.0.0-beta09'
         }
     } else {
         implementation project(':framesequence')

@@ -1,0 +1,1 @@
+-keep class xyz.yorek.glide.framesequence.FrameSequence {*;}
