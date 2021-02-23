@@ -96,4 +96,13 @@
             android:layout_marginTop="32dp"/>
     </LinearLayout>
 
+<!--    <Button-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="jump to another activity"-->
+<!--        android:onClick="jumpToAnotherActivity"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"/>-->
+
 </androidx.constraintlayout.widget.ConstraintLayout>

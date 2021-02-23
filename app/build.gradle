@@ -30,13 +30,21 @@ android {
 
 dependencies {
     if (PUBLISH.toBoolean()) {
-        implementation 'xyz.yorek.glide:framesequence-integration:1.0.0-beta07'
+        if (GLIDE_V480.toBoolean()) {
+            implementation 'xyz.yorek.glide:framesequence-integration-480:1.0.0-beta08'
+        } else {
+            implementation 'xyz.yorek.glide:framesequence-integration:1.0.0-beta08'
+        }
     } else {
         implementation project(':framesequence')
     }
 
-    implementation 'com.github.bumptech.glide:glide:4.11.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    def glideVersion = GLIDE_V480.toBoolean() ? "4.8.0" : "4.11.0"
+    implementation "com.github.bumptech.glide:glide:$glideVersion"
+    annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
+    if (GLIDE_V480.toBoolean()) {
+        annotationProcessor "androidx.annotation:annotation:1.1.0"
+    }
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'

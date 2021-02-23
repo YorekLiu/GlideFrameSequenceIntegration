@@ -9,7 +9,6 @@ import com.bumptech.glide.annotation.GlideExtension;
 import com.bumptech.glide.annotation.GlideOption;
 import com.bumptech.glide.annotation.GlideType;
 import com.bumptech.glide.load.Transformation;
-import com.bumptech.glide.request.BaseRequestOptions;
 import com.bumptech.glide.request.RequestOptions;
 
 import xyz.yorek.glide.framesequence.FrameSequenceDrawable;
@@ -30,22 +29,12 @@ public class FrameSequenceGlideExtension {
     }
 
     @GlideOption(override = GlideOption.OVERRIDE_EXTEND)
-    public static BaseRequestOptions<?> transform(BaseRequestOptions<?> requestBuilder, @NonNull Transformation<Bitmap> transformation) {
+    public static RequestOptions transform(RequestOptions requestBuilder, @NonNull Transformation<Bitmap> transformation) {
         return requestBuilder.transform(FrameSequenceDrawable.class, new FrameSequenceDrawableTransformation(transformation));
     }
 
     @GlideOption(override = GlideOption.OVERRIDE_EXTEND)
-    public static BaseRequestOptions<?> optionalTransform(BaseRequestOptions<?> requestBuilder, @NonNull Transformation<Bitmap> transformation) {
+    public static RequestOptions optionalTransform(RequestOptions requestBuilder, @NonNull Transformation<Bitmap> transformation) {
         return requestBuilder.optionalTransform(FrameSequenceDrawable.class, new FrameSequenceDrawableTransformation(transformation));
     }
-
-//    @GlideOption(override = GlideOption.OVERRIDE_EXTEND)
-//    public static RequestOptions transform(RequestOptions requestBuilder, @NonNull Transformation<Bitmap> transformation) {
-//        return requestBuilder.transform(FrameSequenceDrawable.class, new FrameSequenceDrawableTransformation(transformation));
-//    }
-//
-//    @GlideOption(override = GlideOption.OVERRIDE_EXTEND)
-//    public static RequestOptions optionalTransform(RequestOptions requestBuilder, @NonNull Transformation<Bitmap> transformation) {
-//        return requestBuilder.optionalTransform(FrameSequenceDrawable.class, new FrameSequenceDrawableTransformation(transformation));
-//    }
 }

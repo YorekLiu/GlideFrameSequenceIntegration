@@ -8,10 +8,14 @@
 
 ### 添加依赖
 
-请先启用 Glide 的 [Generated API](https://bumptech.github.io/glide/doc/generatedapi.html) 相关功能后， 添加以下依赖项即可：
+请先启用 Glide 的 [Generated API](https://bumptech.github.io/glide/doc/generatedapi.html) 相关功能后， 按照 Glide 版本添加对应依赖项即可：
 
 ```gradle
+// glide 版本在4.9.0及以后
 implementation 'xyz.yorek.glide:framesequence-integration:${lastest-version}'
+
+// glide 版本在4.8.0及以前
+implementation 'xyz.yorek.glide:framesequence-integration-480:${lastest-version}'
 ```
 
 > 如何简单判断有没有开启 [Generated API](https://bumptech.github.io/glide/doc/generatedapi.html)？一般来说，能在代码中使用`GlideApp`加载图片即可。

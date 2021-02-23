@@ -2,10 +2,10 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-def _artifactId = 'framesequence-integration'
+def _artifactId = GLIDE_V480.toBoolean() ? 'framesequence-integration-480' : 'framesequence-integration'
 def _group = 'xyz.yorek.glide'
 group = _group
-version = '1.0.0-beta07'
+version = '1.0.0-beta08'
 project.archivesBaseName = _artifactId
 
 def siteUrl = 'https://github.com/YorekLiu/GlideFrameSequenceIntegration'

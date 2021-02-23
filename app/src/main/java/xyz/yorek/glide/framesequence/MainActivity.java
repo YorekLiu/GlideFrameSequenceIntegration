@@ -3,6 +3,7 @@ package xyz.yorek.glide.framesequence;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -11,7 +12,6 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.MultiTransformation;
 import com.bumptech.glide.load.engine.GlideException;
@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         final ImageView ivGlideDefault = findViewById(R.id.ivGlideDefault);
         final ImageView ivFrameSequence = findViewById(R.id.ivFrameSequence);
 
@@ -38,13 +37,13 @@ public class MainActivity extends AppCompatActivity {
             updateImageViewSize(size, ivGlideDefault, ivFrameSequence);
         });
 
+        final int _16dp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16F, getResources().getDisplayMetrics());
         final Spinner imageViewSpinner = findViewById(R.id.spinner);
         findViewById(R.id.btnGlideDefault).setOnClickListener(v -> {
-            //                GlideApp.with(this)
-            Glide.with(this)
+            GlideApp.with(this)
                     .asGif()
                     .load(getDrawable(imageViewSpinner))
-                    .transform(new MultiTransformation<>(new CenterCrop(), new RoundedCorners(16)))
+                    .transform(new MultiTransformation<>(new CenterCrop(), new RoundedCorners(_16dp)))
                     .listener(new RequestListener<GifDrawable>() {
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<GifDrawable> target, boolean isFirstResource) {
@@ -60,11 +59,10 @@ public class MainActivity extends AppCompatActivity {
                     .into(ivGlideDefault);
         });
         findViewById(R.id.btnFrameSequence).setOnClickListener(v -> {
-            //                GlideApp.with(this)
-            Glide.with(this)
+            GlideApp.with(this)
 //                    .asFrameSequence()
                     .load(getDrawable(imageViewSpinner))
-                    .transform(new MultiTransformation<>(new CenterCrop(), new RoundedCorners(16)))
+                    .transform(new MultiTransformation<>(new CenterCrop(), new RoundedCorners(_16dp)))
                     .listener(new RequestListener<Drawable>() {
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -93,4 +91,8 @@ public class MainActivity extends AppCompatActivity {
     private int getDrawable(Spinner spinner) {
         return spinner.getSelectedItemPosition() == 1 ? R.drawable.aaa : R.drawable.bbb;
     }
+
+//    public void jumpToAnotherActivity(View view) {
+//        startActivity(new Intent(this, ConstraintLayoutActivity.class));
+//    }
 }

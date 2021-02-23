@@ -152,6 +152,8 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
     private OnFinishedListener mOnFinishedListener;
     // update by yorek.liu >> begin
     private OnFrameTransformationListener mOnFrameTransformationListener;
+    // save the transferred bitmap to draw, don't scale the bitmap to make it clear.
+    private Bitmap mBackTransferredBitmap;
     // update by yorek.liu >> end
     private RectF mTempRectF = new RectF();
     /**
@@ -178,7 +180,7 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
                 invalidateTimeMs = mFrameSequenceState.getFrame(nextFrame, bitmap, lastFrame, mSampleSize);
                 // update by yorek.liu >> begin
                 if (mOnFrameTransformationListener != null) {
-                    mBackBitmap = mOnFrameTransformationListener.transfer(bitmap);
+                    mBackTransferredBitmap = mOnFrameTransformationListener.transfer(bitmap);
                 }
                 // update by yorek.liu >> end
             } catch(Exception e) {
@@ -191,9 +193,16 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
             }
             boolean schedule = false;
             Bitmap bitmapToRelease = null;
+            // update by yorek.liu >> begin
+            Bitmap transferredBitmapToRelease = null;
+            // update by yorek.liu >> end
             synchronized (mLock) {
                 if (mDestroyed) {
                     bitmapToRelease = mBackBitmap;
+                    // update by yorek.liu >> begin
+                    transferredBitmapToRelease = mBackTransferredBitmap;
+                    mBackTransferredBitmap = null;
+                    // update by yorek.liu >> end
                     mBackBitmap = null;
                 } else if (mNextFrameToDecode >= 0 && mState == STATE_DECODING) {
                     schedule = true;
@@ -209,6 +218,11 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
                 // drawable thread - drawable is likely detached, so schedule is noop.
                 mBitmapProvider.releaseBitmap(bitmapToRelease);
             }
+            // update by yorek.liu >> begin
+            if (transferredBitmapToRelease != null) {
+                mBitmapProvider.releaseBitmap(transferredBitmapToRelease);
+            }
+            // update by yorek.liu >> end
         }
     };
     private Runnable mFinishedCallbackRunnable = new Runnable() {
@@ -304,6 +318,9 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
         }
         Bitmap bitmapToReleaseA;
         Bitmap bitmapToReleaseB = null;
+        // update by yorek.liu >> begin
+        Bitmap transferredBitmapToReleaseB = null;
+        // update by yorek.liu >> end
         synchronized (mLock) {
             checkDestroyedLocked();
             bitmapToReleaseA = mFrontBitmap;
@@ -311,6 +328,10 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
             if (mState != STATE_DECODING) {
                 bitmapToReleaseB = mBackBitmap;
                 mBackBitmap = null;
+                // update by yorek.liu >> begin
+                transferredBitmapToReleaseB = mBackTransferredBitmap;
+                mBackTransferredBitmap = null;
+                // update by yorek.liu >> end
             }
             mDestroyed = true;
         }
@@ -319,6 +340,11 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
         if (bitmapToReleaseB != null) {
             mBitmapProvider.releaseBitmap(bitmapToReleaseB);
         }
+        // update by yorek.liu >> begin
+        if (transferredBitmapToReleaseB != null) {
+            mBitmapProvider.releaseBitmap(transferredBitmapToReleaseB);
+        }
+        // update by yorek.liu >> end
     }
     @Override
     protected void finalize() throws Throwable {
@@ -389,7 +415,14 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
             canvas.restore();
         } else {
             mPaint.setShader(null);
-            canvas.drawBitmap(mFrontBitmap, mSrcRect, getBounds(), mPaint);
+            // update by yorek.liu >> begin
+//            canvas.drawBitmap(mFrontBitmap, mSrcRect, getBounds(), mPaint);
+            if (mBackTransferredBitmap != null) {
+                canvas.drawBitmap(mBackTransferredBitmap, null, getBounds(), mPaint);
+            } else {
+                canvas.drawBitmap(mFrontBitmap, mSrcRect, getBounds(), mPaint);
+            }
+            // update by yorek.liu >> end
         }
     }
     private void scheduleDecodeLocked() {
@@ -483,20 +516,21 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
 
     // update by yorek.liu >> begin
     public int getSize() {
-        return getBitmapByteSize(getIntrinsicWidth(), getIntrinsicHeight(), mFrontBitmap.getConfig())
-                + getBitmapByteSize(getIntrinsicWidth(), getIntrinsicHeight(), mBackBitmap.getConfig());
+        return getBitmapByteSize(mFrontBitmap) + getBitmapByteSize(mBackBitmap) + getBitmapByteSize(mBackTransferredBitmap);
     }
 
-    /**
-     * Returns the in memory size of {@link Bitmap} with the given width, height, and
-     * {@link Bitmap.Config}.
-     */
+    private static int getBitmapByteSize(@Nullable Bitmap bitmap) {
+        if (bitmap == null) {
+            return 0;
+        }
+        return getBitmapByteSize(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
+    }
+
     private static int getBitmapByteSize(int width, int height, @Nullable Bitmap.Config config) {
         return width * height * getBytesPerPixel(config);
     }
 
     private static int getBytesPerPixel(@Nullable Bitmap.Config config) {
-        // A bitmap by decoding a GIF has null "config" in certain environments.
         if (config == null) {
             config = Bitmap.Config.ARGB_8888;
         }
