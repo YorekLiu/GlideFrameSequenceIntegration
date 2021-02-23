@@ -1,9 +1,11 @@
 package xyz.yorek.glide.framesequence;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -94,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         return spinner.getSelectedItemPosition() == 1 ? R.drawable.aaa : R.drawable.bbb;
     }
 
-//    public void jumpToAnotherActivity(View view) {
-//        startActivity(new Intent(this, ConstraintLayoutActivity.class));
-//    }
+    public void jumpToAnotherActivity(View view) {
+        startActivity(new Intent(this, ConstraintLayoutActivity.class));
+    }
 }

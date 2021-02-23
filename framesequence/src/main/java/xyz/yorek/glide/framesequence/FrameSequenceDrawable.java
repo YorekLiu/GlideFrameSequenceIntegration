@@ -181,6 +181,7 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
                 // update by yorek.liu >> begin
                 if (mOnFrameTransformationListener != null) {
                     mBackTransferredBitmap = mOnFrameTransformationListener.transfer(bitmap);
+                    setBounds(0, 0, mBackTransferredBitmap.getWidth(), mBackTransferredBitmap.getHeight());
                 }
                 // update by yorek.liu >> end
             } catch(Exception e) {
@@ -502,11 +503,19 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
     // update by yorek.liu >> begin
     @Override
     public int getIntrinsicWidth() {
-        return mSampleSize == 0 ? mFrameSequence.getWidth() : mFrameSequence.getWidth() / mSampleSize;
+        if (mBackTransferredBitmap != null) {
+            return mBackTransferredBitmap.getWidth();
+        } else {
+            return mSampleSize == 0 ? mFrameSequence.getWidth() : mFrameSequence.getWidth() / mSampleSize;
+        }
     }
     @Override
     public int getIntrinsicHeight() {
-        return mSampleSize == 0 ? mFrameSequence.getHeight() : mFrameSequence.getHeight() / mSampleSize;
+        if (mBackTransferredBitmap != null) {
+            return mBackTransferredBitmap.getHeight();
+        } else {
+            return mSampleSize == 0 ? mFrameSequence.getHeight() : mFrameSequence.getHeight() / mSampleSize;
+        }
     }
     // update by yorek.liu >> end
     @Override

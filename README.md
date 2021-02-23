@@ -47,6 +47,11 @@ GlideApp.with(xx).asGif().load()        // 2
 
 此时，对于1，您可以选择去掉`asGif()`语句。对于2，您也可以选择去掉`asGif()`语句，或者使用 [Generated API](https://bumptech.github.io/glide/doc/generatedapi.html) 将`asGif()`替换成`asFrameSequence()`来显示调用使用 framesequence 解码器。
 
+### 对 transform 的支持
+
+在 Generated API 下，您可以应用任何 transform 在 FrameSequenceDrawable 上，无需调用任何其他的方法。  
+不过值得注意的是，为了更清晰的显示图像，FrameSequenceDrawable 内部会保存一份 transform 后的 Bitmap，会添加额外的内存消耗。
+
 ## 原理 
 
 ### integration原理
