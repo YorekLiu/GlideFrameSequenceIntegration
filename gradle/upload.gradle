@@ -3,9 +3,8 @@ apply plugin: 'com.jfrog.bintray'
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 def _artifactId = GLIDE_V480.toBoolean() ? 'framesequence-integration-480' : 'framesequence-integration'
-def _group = 'xyz.yorek.glide'
-group = _group
-version = '1.0.0-beta09'
+group = GROUP
+version = VERSION
 project.archivesBaseName = _artifactId
 
 def siteUrl = 'https://github.com/YorekLiu/GlideFrameSequenceIntegration'
@@ -77,7 +76,7 @@ install {
                 description 'Glide framesequence integration'
                 url siteUrl
 
-                groupId _group
+                groupId GROUP
                 artifactId _artifactId
                 version version
 
