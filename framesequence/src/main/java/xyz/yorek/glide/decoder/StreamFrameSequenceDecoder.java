@@ -43,8 +43,10 @@ public class StreamFrameSequenceDecoder implements ResourceDecoder<InputStream, 
         ImageHeaderParser.ImageType imageType = ImageHeaderParserUtils.getType(parsers, source, byteArrayPool);
         if (imageType == ImageHeaderParser.ImageType.GIF) {
             return true;
-        } else if (imageType == ImageHeaderParser.ImageType.WEBP) {
+        } else if (imageType == ImageHeaderParser.ImageType.WEBP_A) {
+            // TODO test the result when reading twice
             AnimatedWebpHeaderParser.WebpImageType webpImageType = AnimatedWebpHeaderParser.getType(source, byteArrayPool);
+            Log.d(TAG, "isAnimatedWebpType = " + webpImageType.name());
             boolean isAnimatedWebpType = AnimatedWebpHeaderParser.isAnimatedWebpType(webpImageType);
             Log.d(TAG, "isAnimatedWebpType = " + isAnimatedWebpType);
             return false;
@@ -53,9 +55,6 @@ public class StreamFrameSequenceDecoder implements ResourceDecoder<InputStream, 
         return false;
     }
 
-    /**
-     * 将 GIF 的 InputStream 转为 GifDrawableResource
-     */
     @Override
     public Resource<FrameSequenceDrawable> decode(@NonNull InputStream source, int width, int height, @NonNull Options options) throws IOException {
         byte[] data = inputStreamToBytes(source);
@@ -67,7 +66,7 @@ public class StreamFrameSequenceDecoder implements ResourceDecoder<InputStream, 
     }
 
     private static byte[] inputStreamToBytes(InputStream is) {
-        final int bufferSize = 16384;
+        final int bufferSize = 16 * 1024;
         ByteArrayOutputStream buffer = new ByteArrayOutputStream(bufferSize);
         try {
             int nRead;

@@ -53,8 +53,10 @@ public class ByteBufferFrameSequenceDecoder implements ResourceDecoder<ByteBuffe
         ImageHeaderParser.ImageType imageType = ImageHeaderParserUtils.getType(parsers, source);
         if (imageType == ImageHeaderParser.ImageType.GIF) {
             return true;
-        } else if (imageType == ImageHeaderParser.ImageType.WEBP) {
+        } else if (imageType == ImageHeaderParser.ImageType.WEBP_A) {
+            source.rewind();
             AnimatedWebpHeaderParser.WebpImageType webpImageType = AnimatedWebpHeaderParser.getType(source);
+            Log.d(TAG, "isAnimatedWebpType = " + webpImageType.name());
             boolean isAnimatedWebpType = AnimatedWebpHeaderParser.isAnimatedWebpType(webpImageType);
             Log.d(TAG, "isAnimatedWebpType = " + isAnimatedWebpType);
             return false;
