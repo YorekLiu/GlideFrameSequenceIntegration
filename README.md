@@ -52,6 +52,10 @@ GlideApp.with(xx).asGif().load()        // 2
 在 Generated API 下，您可以应用任何 transform 在 FrameSequenceDrawable 上，就像 transform 普通的Bitmap等一样，无需额外调用任何其他的方法。  
 不过值得注意的是，为了更清晰的显示图像，FrameSequenceDrawable 内部会保存一份 transform 后的 Bitmap，这会增加额外的内存消耗。
 
+### Proguard Rules
+
+本Library已经配置好了，无须开发者额外进行配置。
+
 ## 原理 
 
 ### integration原理
