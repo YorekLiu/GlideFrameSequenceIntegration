@@ -156,8 +156,6 @@ public class ConstraintLayoutActivity extends AppCompatActivity {
 
     private List<String> getAnimatedWebpUrls() {
         List<String> webpUrls = new ArrayList<>(Arrays.asList(ANIM_WEBP));
-        String resUrl = "android.resource://" + getPackageName() + "/" + R.drawable.broken;
-        webpUrls.add(resUrl);
         return webpUrls;
     }
 

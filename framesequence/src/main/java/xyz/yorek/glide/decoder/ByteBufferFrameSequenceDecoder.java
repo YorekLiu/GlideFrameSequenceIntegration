@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.List;
 
+import xyz.yorek.glide.AnimatedWebpHeaderParser;
 import xyz.yorek.glide.framesequence.FrameSequence;
 import xyz.yorek.glide.framesequence.FrameSequenceDrawable;
 
@@ -46,8 +47,20 @@ public class ByteBufferFrameSequenceDecoder implements ResourceDecoder<ByteBuffe
     @SuppressWarnings("ConstantConditions")
     @Override
     public boolean handles(@NonNull ByteBuffer source, @NonNull Options options) throws IOException {
-        return !options.get(GifOptions.DISABLE_ANIMATION)
-                && ImageHeaderParserUtils.getType(parsers, source) == ImageHeaderParser.ImageType.GIF;
+        if (options.get(GifOptions.DISABLE_ANIMATION)) {
+            return false;
+        }
+        ImageHeaderParser.ImageType imageType = ImageHeaderParserUtils.getType(parsers, source);
+        if (imageType == ImageHeaderParser.ImageType.GIF) {
+            return true;
+        } else if (imageType == ImageHeaderParser.ImageType.WEBP) {
+            AnimatedWebpHeaderParser.WebpImageType webpImageType = AnimatedWebpHeaderParser.getType(source);
+            boolean isAnimatedWebpType = AnimatedWebpHeaderParser.isAnimatedWebpType(webpImageType);
+            Log.d(TAG, "isAnimatedWebpType = " + isAnimatedWebpType);
+            return false;
+        }
+
+        return false;
     }
 
     @Override
