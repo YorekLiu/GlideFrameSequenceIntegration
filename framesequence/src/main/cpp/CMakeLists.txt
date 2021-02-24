@@ -9,8 +9,7 @@ cmake_minimum_required(VERSION 3.10.2)
 # define multiple libraries by adding multiple add_library() commands,
 # and CMake builds them for you. When you build your app, Gradle
 # automatically packages shared libraries with your APK.
-
-#ADD_SUBDIRECTORY(giflib)
+add_subdirectory(webp)
 
 FILE(
         GLOB
@@ -37,5 +36,6 @@ target_link_libraries( # Specifies the target library.
 
                        # Links the target library to the log library
                        # included in the NDK.
+                       webp-decoder
                        jnigraphics
                        log)

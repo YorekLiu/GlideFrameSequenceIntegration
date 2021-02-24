@@ -67,8 +67,10 @@ public:
             Color8888* outputPtr, int outputPixelStride, int previousFrameNr, int sampleSize);
     // update by yorek.liu >> end
 private:
+    // update by yorek.liu >> begin
     void savePreserveBuffer(Color8888* outputPtr, int outputPixelStride, int frameNr, int sampleSize);
     void restorePreserveBuffer(Color8888* outputPtr, int outputPixelStride, int sampleSize);
+    // update by yorek.liu >> end
     const FrameSequence_gif& mFrameSequence;
     Color8888* mPreserveBuffer;
     int mPreserveBufferFrame;

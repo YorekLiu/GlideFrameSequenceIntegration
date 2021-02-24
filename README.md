@@ -93,6 +93,7 @@ framesequence 会使用双缓冲机制来进行 gif 动画的播放，每一帧�
 
 - [giflib](http://giflib.sourceforge.net/gif_lib.html), 本库使用的是5.2.1版本
 - [Google framesequence](https://android.googlesource.com/platform/frameworks/ex/+/android-9.0.0_r16/framesequence)，本库使用的是android-9.0.0_r16上的源文件
+- [libwebp-decode](https://android.googlesource.com/platform/external/webp/+/android-9.0.0_r16/Android.bp#118)
 
 ## TODO
 
