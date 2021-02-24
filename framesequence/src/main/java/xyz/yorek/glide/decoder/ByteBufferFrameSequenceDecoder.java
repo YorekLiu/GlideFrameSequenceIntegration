@@ -56,10 +56,7 @@ public class ByteBufferFrameSequenceDecoder implements ResourceDecoder<ByteBuffe
         } else if (imageType == ImageHeaderParser.ImageType.WEBP_A) {
             source.rewind();
             AnimatedWebpHeaderParser.WebpImageType webpImageType = AnimatedWebpHeaderParser.getType(source);
-            Log.d(TAG, "isAnimatedWebpType = " + webpImageType.name());
-            boolean isAnimatedWebpType = AnimatedWebpHeaderParser.isAnimatedWebpType(webpImageType);
-            Log.d(TAG, "isAnimatedWebpType = " + isAnimatedWebpType);
-            return false;
+            return AnimatedWebpHeaderParser.isAnimatedWebpType(webpImageType);
         }
 
         return false;

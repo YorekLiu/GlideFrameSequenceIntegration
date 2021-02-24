@@ -46,10 +46,7 @@ public class StreamFrameSequenceDecoder implements ResourceDecoder<InputStream, 
         } else if (imageType == ImageHeaderParser.ImageType.WEBP_A) {
             // TODO test the result when reading twice
             AnimatedWebpHeaderParser.WebpImageType webpImageType = AnimatedWebpHeaderParser.getType(source, byteArrayPool);
-            Log.d(TAG, "isAnimatedWebpType = " + webpImageType.name());
-            boolean isAnimatedWebpType = AnimatedWebpHeaderParser.isAnimatedWebpType(webpImageType);
-            Log.d(TAG, "isAnimatedWebpType = " + isAnimatedWebpType);
-            return false;
+            return AnimatedWebpHeaderParser.isAnimatedWebpType(webpImageType);
         }
 
         return false;
