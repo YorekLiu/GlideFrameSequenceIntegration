@@ -44,7 +44,6 @@ public class StreamFrameSequenceDecoder implements ResourceDecoder<InputStream, 
         if (imageType == ImageHeaderParser.ImageType.GIF) {
             return true;
         } else if (imageType == ImageHeaderParser.ImageType.WEBP_A) {
-            // TODO test the result when reading twice
             AnimatedWebpHeaderParser.WebpImageType webpImageType = AnimatedWebpHeaderParser.getType(source, byteArrayPool);
             return AnimatedWebpHeaderParser.isAnimatedWebpType(webpImageType);
         }

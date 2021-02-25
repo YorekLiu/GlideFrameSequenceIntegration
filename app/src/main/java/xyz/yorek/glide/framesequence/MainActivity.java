@@ -93,7 +93,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private int getDrawable(Spinner spinner) {
-        return spinner.getSelectedItemPosition() == 1 ? R.drawable.aaa : R.drawable.bbb;
+        switch (spinner.getSelectedItemPosition()) {
+            case 0:
+                return R.drawable.aaa;
+            case 1:
+                return R.drawable.aaa_webp;
+            case 2:
+                return R.drawable.bbb;
+            default:
+                return R.drawable.native_crash_webp;
+        }
     }
 
     public void jumpToAnotherActivity(View view) {

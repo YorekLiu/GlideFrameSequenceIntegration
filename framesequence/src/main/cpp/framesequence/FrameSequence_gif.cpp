@@ -358,9 +358,7 @@ static bool isGif(void* header, int header_size) {
             || !memcmp(GIF89_STAMP, header, GIF_STAMP_LEN);
 }
 static bool acceptsBuffers() {
-    // update by yorek.liu >> begin
-    return true;
-    // update by yorek.liu >> end
+    return false;
 }
 static FrameSequence* createFramesequence(Stream* stream) {
     return new FrameSequence_gif(stream);

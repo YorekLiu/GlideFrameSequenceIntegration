@@ -23,7 +23,8 @@ import xyz.yorek.glide.framesequence.FrameSequenceDrawable;
 
 public class ByteBufferFrameSequenceDecoder implements ResourceDecoder<ByteBuffer, FrameSequenceDrawable> {
 
-    public static final boolean ENABLE_SAMPLE = true;
+    // TODO enable this, when webp downsample supported
+    public static final boolean ENABLE_SAMPLE = false;
 
     private static final String TAG = ByteBufferFrameSequenceDecoder.class.getSimpleName();
     private final List<ImageHeaderParser> parsers;

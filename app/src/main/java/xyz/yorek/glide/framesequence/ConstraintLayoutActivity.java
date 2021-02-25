@@ -48,13 +48,13 @@ public class ConstraintLayoutActivity extends AppCompatActivity {
             "https://www.gstatic.com/webp/gallery3/5_webp_a.webp",
     };
     private static final String[] ANIM_WEBP = {
-            //"https://raw.githubusercontent.com/1290846731/RecordMySelf/master/chect.webp",
+            "https://raw.githubusercontent.com/1290846731/RecordMySelf/master/chect.webp",
             "https://www.gstatic.com/webp/animated/1.webp",
             "https://qidian.qpic.cn/qidian_common/349573/a36f7d7d8a5e15e1cf3c32d05109467a/0",
             "https://mathiasbynens.be/demo/animated-webp-supported.webp",
-            "https://isparta.github.io/compare-webp/image/gif_webp/webp/2.webp",
+            "https://isparta.github.io/compare-webp/image/gif_webp/webp/2.webp", // TODO sample
             "http://osscdn.ixingtu.com/musi_file/20181108/a20540641eb7de9a8bf186261a8ccf57.webp",
-            //"https://video.billionbottle.com/d6e66dbb883a48f989b1b1d0e035bbbf/image/dynamic/71fcdca947d144b883949bbe368d60c3.gif?x-oss-process=image/resize,w_320/format,webp"
+            "https://video.billionbottle.com/d6e66dbb883a48f989b1b1d0e035bbbf/image/dynamic/71fcdca947d144b883949bbe368d60c3.gif?x-oss-process=image/resize,w_320/format,webp"
     };
     private static final String[] ANIM_GIF = {
             "https://78.media.tumblr.com/a0c1be3183449f0d207a022c28f4bbf7/tumblr_p1p2cduAiA1wmghc4o1_500.gif",
