@@ -26,9 +26,6 @@ public final class FrameSequenceLibraryModule extends LibraryGlideModule {
         ResourceDecoder<ByteBuffer, FrameSequenceDrawable> byteBufferGifLibDecoder =
                 new ByteBufferFrameSequenceDecoder(registry.getImageHeaderParsers(), glide.getBitmapPool());
         registry
-//                // for *.gif
-//                .prepend(Registry.BUCKET_GIF, InputStream.class, FrameSequenceDrawable.class, new StreamFrameSequenceDecoder(registry.getImageHeaderParsers(), byteBufferGifLibDecoder, glide.getArrayPool()))
-//                .prepend(Registry.BUCKET_GIF, ByteBuffer.class, FrameSequenceDrawable.class, byteBufferGifLibDecoder)
                 // for animated webp and gif
                 .prepend(InputStream.class, FrameSequenceDrawable.class, new StreamFrameSequenceDecoder(registry.getImageHeaderParsers(), byteBufferGifLibDecoder, glide.getArrayPool()))
                 .prepend(ByteBuffer.class, FrameSequenceDrawable.class, byteBufferGifLibDecoder);

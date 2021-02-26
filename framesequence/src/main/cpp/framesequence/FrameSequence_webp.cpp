@@ -255,8 +255,6 @@ bool FrameSequenceState_webp::decodeFrame(const WebPIterator& currIter, Color888
         mDecoderConfig.options.use_scaling = 1;
         mDecoderConfig.options.scaled_width = currIter.width / sampleSize;
         mDecoderConfig.options.scaled_height = currIter.height / sampleSize;
-//        mDecoderConfig.options.scaled_width = mFrameSequence.getWidth() / sampleSize;
-//        mDecoderConfig.options.scaled_height = mFrameSequence.getHeight() / sampleSize;
     }
     // update by yorek.liu >> end
     const WebPData& currFrame = currIter.fragment;
