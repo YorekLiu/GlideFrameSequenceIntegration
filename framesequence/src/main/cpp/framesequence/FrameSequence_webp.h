@@ -78,12 +78,17 @@ public:
                            Color8888* outputPtr, int outputPixelStride, int previousFrameNr, int sampleSize);
     // update by yorek.liu >> end
 private:
+    // update by yorek.liu >> begin
     void initializeFrame(const WebPIterator& currIter, Color8888* currBuffer, int currStride,
-                         const WebPIterator& prevIter, const Color8888* prevBuffer, int prevStride);
+                         const WebPIterator& prevIter, const Color8888* prevBuffer, int prevStride, int sampleSize);
     bool decodeFrame(const WebPIterator& iter, Color8888* currBuffer, int currStride,
-                     const WebPIterator& prevIter, const Color8888* prevBuffer, int prevStride);
+                     const WebPIterator& prevIter, const Color8888* prevBuffer, int prevStride, int sampleSize);
+    // update by yorek.liu >> end
     const FrameSequence_webp& mFrameSequence;
     WebPDecoderConfig mDecoderConfig;
     Color8888* mPreservedBuffer;
+    // update by yorek.liu >> begin
+    int mPreservedBufferSize;
+    // update by yorek.liu >> end
 };
 #endif //RASTERMILL_FRAMESQUENCE_WEBP_H

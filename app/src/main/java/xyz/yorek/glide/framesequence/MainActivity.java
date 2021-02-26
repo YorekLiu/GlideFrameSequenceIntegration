@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             GlideApp.with(this)
 //                    .asFrameSequence()
                     .load(getDrawable(imageViewSpinner))
-                    .transform(new MultiTransformation<>(new CenterCrop(), new RoundedCorners(_16dp)))
+//                    .transform(new MultiTransformation<>(new CenterCrop(), new RoundedCorners(_16dp)))
                     .listener(new RequestListener<Drawable>() {
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {

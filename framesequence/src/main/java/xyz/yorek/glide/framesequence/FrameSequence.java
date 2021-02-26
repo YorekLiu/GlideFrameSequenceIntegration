@@ -118,7 +118,8 @@ public class FrameSequence {
                 throw new IllegalStateException("attempted to draw destroyed FrameSequenceState");
             }
             // update by yorek.liu >> begin
-            return nativeGetFrame(mNativeState, frameNr, output, previousFrameNr, sampleSize);
+            long delay = nativeGetFrame(mNativeState, frameNr, output, previousFrameNr, sampleSize);
+            return delay;
             // update by yorek.liu >> end
         }
     }

@@ -19,7 +19,10 @@
 #include "utils/math.h"
 #include "../webp/src/webp/format_constants.h"
 #include "FrameSequence_webp.h"
+// update by yorek.liu >> begin TODO debug only
 #define WEBP_DEBUG 0
+//#define WEBP_DEBUG 1
+// update by yorek.liu >> end
 ////////////////////////////////////////////////////////////////////////////////
 // Frame sequence
 ////////////////////////////////////////////////////////////////////////////////
@@ -31,13 +34,22 @@ static bool isFullFrame(const WebPIterator& frame, int canvasWidth, int canvasHe
     return (frame.width == canvasWidth && frame.height == canvasHeight);
 }
 // Returns true if the rectangle defined by 'frame' contains pixel (x, y).
-static bool FrameContainsPixel(const WebPIterator& frame, int x, int y) {
-    const int left = frame.x_offset;
-    const int right = left + frame.width;
-    const int top = frame.y_offset;
-    const int bottom = top + frame.height;
+// update by yorek.liu >> begin
+//static bool FrameContainsPixel(const WebPIterator& frame, int x, int y) {
+//    const int left = frame.x_offset;
+//    const int right = left + frame.width;
+//    const int top = frame.y_offset;
+//    const int bottom = top + frame.height;
+//    return x >= left && x < right && y >= top && y < bottom;
+//}
+static bool FrameContainsPixel(const WebPIterator& frame, int x, int y, int sampleSize) {
+    const int left = frame.x_offset / sampleSize;
+    const int right = left + frame.width / sampleSize;
+    const int top = frame.y_offset / sampleSize;
+    const int bottom = top + frame.height / sampleSize;
     return x >= left && x < right && y >= top && y < bottom;
 }
+// update by yorek.liu >> end
 // Construct mIsKeyFrame array.
 void FrameSequence_webp::constructDependencyChain() {
     const size_t frameCount = getFrameCount();
@@ -170,46 +182,89 @@ FrameSequenceState_webp::FrameSequenceState_webp(const FrameSequence_webp& frame
     mDecoderConfig.output.colorspace = MODE_rgbA;  // Pre-multiplied alpha mode.
     const int canvasWidth = mFrameSequence.getWidth();
     const int canvasHeight = mFrameSequence.getHeight();
+    // update by yorek.liu >> begin
+    mPreservedBufferSize = canvasWidth * canvasHeight;
+    // update by yorek.liu >> end
     mPreservedBuffer = new Color8888[canvasWidth * canvasHeight];
 }
 FrameSequenceState_webp::~FrameSequenceState_webp() {
     delete[] mPreservedBuffer;
 }
+// update by yorek.liu >> begin
 void FrameSequenceState_webp::initializeFrame(const WebPIterator& currIter, Color8888* currBuffer,
-                                              int currStride, const WebPIterator& prevIter, const Color8888* prevBuffer, int prevStride) {
+                                              int currStride, const WebPIterator& prevIter, const Color8888* prevBuffer, int prevStride, int sampleSize) {
+// update by yorek.liu >> end
     const int canvasWidth = mFrameSequence.getWidth();
     const int canvasHeight = mFrameSequence.getHeight();
+    // update by yorek.liu >> begin
+    const int downsampledWidth = canvasWidth / sampleSize;
+    const int downsampledHeight = canvasHeight / sampleSize;
+    // update by yorek.liu >> end
     const bool currFrameIsKeyFrame = mFrameSequence.isKeyFrame(currIter.frame_num - 1);
     if (currFrameIsKeyFrame) {  // Clear canvas.
-        for (int y = 0; y < canvasHeight; y++) {
+        // update by yorek.liu >> begin
+        for (int y = 0; y < downsampledHeight; y++) {
+        // update by yorek.liu >> end
             Color8888* dst = currBuffer + y * currStride;
-            clearLine(dst, canvasWidth);
+            // update by yorek.liu >> begin
+            clearLine(dst, downsampledWidth);
+            // update by yorek.liu >> end
         }
     } else {
         // Preserve previous frame as starting state of current frame.
-        copyFrame(prevBuffer, prevStride, currBuffer, currStride, canvasWidth, canvasHeight);
+        // update by yorek.liu >> begin
+        copyFrame(prevBuffer, prevStride, currBuffer, currStride, downsampledWidth, downsampledHeight);
+        // update by yorek.liu >> end
         // Dispose previous frame rectangle to Background if needed.
         bool prevFrameCompletelyCovered =
                 (!currIter.has_alpha || currIter.blend_method == WEBP_MUX_NO_BLEND) &&
                 checkIfCover(currIter, prevIter);
         if ((prevIter.dispose_method == WEBP_MUX_DISPOSE_BACKGROUND) &&
             !prevFrameCompletelyCovered) {
-            Color8888* dst = currBuffer + prevIter.x_offset + prevIter.y_offset * currStride;
-            for (int j = 0; j < prevIter.height; j++) {
-                clearLine(dst, prevIter.width);
+            // update by yorek.liu >> begin
+//            Color8888* dst = currBuffer + prevIter.x_offset + prevIter.y_offset * currStride;
+//            for (int j = 0; j < prevIter.height; j++) {
+//                clearLine(dst, prevIter.width);
+//                dst += currStride;
+//            }
+            Color8888* dst = currBuffer + (prevIter.x_offset / sampleSize) + (prevIter.y_offset / sampleSize) * currStride;
+            for (int j = 0; j < prevIter.height / sampleSize; j++) {
+                clearLine(dst, prevIter.width / sampleSize);
                 dst += currStride;
             }
+            // update by yorek.liu >> end
         }
     }
 }
+// update by yorek.liu >> begin
 bool FrameSequenceState_webp::decodeFrame(const WebPIterator& currIter, Color8888* currBuffer,
-                                          int currStride, const WebPIterator& prevIter, const Color8888* prevBuffer, int prevStride) {
-    Color8888* dst = currBuffer + currIter.x_offset + currIter.y_offset * currStride;
+                                          int currStride, const WebPIterator& prevIter, const Color8888* prevBuffer, int prevStride, int sampleSize) {
+// update by yorek.liu >> end
+    // update by yorek.liu >> begin
+//    Color8888* dst = currBuffer + currIter.x_offset + currIter.y_offset * currStride;
+    Color8888* dst = currBuffer + (currIter.x_offset / sampleSize) + (currIter.y_offset / sampleSize) * currStride;
+    // update by yorek.liu >> end
     mDecoderConfig.output.u.RGBA.rgba = (uint8_t*)dst;
     mDecoderConfig.output.u.RGBA.stride = currStride * 4;
-    mDecoderConfig.output.u.RGBA.size = mDecoderConfig.output.u.RGBA.stride * currIter.height;
+    // update by yorek.liu >> begin
+    mDecoderConfig.output.u.RGBA.size = mDecoderConfig.output.u.RGBA.stride * (currIter.height / sampleSize);
+//    mDecoderConfig.output.is_external_memory = 1;
+    // add by yorek.liu to scale
+    if (sampleSize > 1) {
+        mDecoderConfig.options.no_fancy_upsampling = 1;
+        mDecoderConfig.options.use_scaling = 1;
+        mDecoderConfig.options.scaled_width = currIter.width / sampleSize;
+        mDecoderConfig.options.scaled_height = currIter.height / sampleSize;
+//        mDecoderConfig.options.scaled_width = mFrameSequence.getWidth() / sampleSize;
+//        mDecoderConfig.options.scaled_height = mFrameSequence.getHeight() / sampleSize;
+    }
+    // update by yorek.liu >> end
     const WebPData& currFrame = currIter.fragment;
     if (WebPDecode(currFrame.bytes, currFrame.size, &mDecoderConfig) != VP8_STATUS_OK) {
+        // update by yorek.liu >> begin
+        ALOGE("currIter: x_offset %d, y_offset %d, width %d, height %d, \n    scaledWidth %d, scaledHeight %d",
+                currIter.x_offset, currIter.y_offset, currIter.width, currIter.height, mDecoderConfig.options.scaled_width, mDecoderConfig.options.scaled_height);
+        // update by yorek.liu >> end
         return false;
     }
     const int canvasWidth = mFrameSequence.getWidth();
@@ -222,10 +277,23 @@ bool FrameSequenceState_webp::decodeFrame(const WebPIterator& currIter, Color888
     // the previous frame buffer.
     if (currIter.blend_method == WEBP_MUX_BLEND && !currFrameIsKeyFrame) {
         if (prevIter.dispose_method == WEBP_MUX_DISPOSE_NONE) {
-            for (int y = 0; y < currIter.height; y++) {
-                const int canvasY = currIter.y_offset + y;
-                for (int x = 0; x < currIter.width; x++) {
-                    const int canvasX = currIter.x_offset + x;
+            // update by yorek.liu >> begin
+//            for (int y = 0; y < currIter.height; y++) {
+//                const int canvasY = currIter.y_offset + y;
+//                for (int x = 0; x < currIter.width; x++) {
+//                    const int canvasX = currIter.x_offset + x;
+//                    Color8888& currPixel = currBuffer[canvasY * currStride + canvasX];
+//                    // FIXME: Use alpha-blending when alpha is between 0 and 255.
+//                    if (!(currPixel & COLOR_8888_ALPHA_MASK)) {
+//                        const Color8888 prevPixel = prevBuffer[canvasY * prevStride + canvasX];
+//                        currPixel = prevPixel;
+//                    }
+//                }
+//            }
+            for (int y = 0; y < currIter.height / sampleSize; y++) {
+                const int canvasY = (currIter.y_offset / sampleSize) + y;
+                for (int x = 0; x < currIter.width / sampleSize; x++) {
+                    const int canvasX = (currIter.x_offset / sampleSize) + x;
                     Color8888& currPixel = currBuffer[canvasY * currStride + canvasX];
                     // FIXME: Use alpha-blending when alpha is between 0 and 255.
                     if (!(currPixel & COLOR_8888_ALPHA_MASK)) {
@@ -234,24 +302,40 @@ bool FrameSequenceState_webp::decodeFrame(const WebPIterator& currIter, Color888
                     }
                 }
             }
+            // update by yorek.liu >> end
         } else {  // prevIter.dispose_method == WEBP_MUX_DISPOSE_BACKGROUND
             // Need to restore transparent pixels to as they were just after frame initialization.
             // That is:
             //   * Transparent if it belongs to previous frame rectangle <-- This is a no-op.
             //   * Pixel in the previous canvas otherwise <-- Need to restore.
-            for (int y = 0; y < currIter.height; y++) {
-                const int canvasY = currIter.y_offset + y;
-                for (int x = 0; x < currIter.width; x++) {
-                    const int canvasX = currIter.x_offset + x;
+            // update by yorek.liu >> begin
+//            for (int y = 0; y < currIter.height; y++) {
+//                const int canvasY = currIter.y_offset + y;
+//                for (int x = 0; x < currIter.width; x++) {
+//                    const int canvasX = currIter.x_offset + x;
+//                    Color8888& currPixel = currBuffer[canvasY * currStride + canvasX];
+//                    // FIXME: Use alpha-blending when alpha is between 0 and 255.
+//                    if (!(currPixel & COLOR_8888_ALPHA_MASK)
+//                        && !FrameContainsPixel(prevIter, canvasX, canvasY)) {
+//                        const Color8888 prevPixel = prevBuffer[canvasY * prevStride + canvasX];
+//                        currPixel = prevPixel;
+//                    }
+//                }
+//            }
+            for (int y = 0; y < currIter.height / sampleSize; y++) {
+                const int canvasY = (currIter.y_offset / sampleSize) + y;
+                for (int x = 0; x < currIter.width / sampleSize; x++) {
+                    const int canvasX = (currIter.x_offset / sampleSize) + x;
                     Color8888& currPixel = currBuffer[canvasY * currStride + canvasX];
                     // FIXME: Use alpha-blending when alpha is between 0 and 255.
                     if (!(currPixel & COLOR_8888_ALPHA_MASK)
-                        && !FrameContainsPixel(prevIter, canvasX, canvasY)) {
+                        && !FrameContainsPixel(prevIter, canvasX, canvasY, sampleSize)) {
                         const Color8888 prevPixel = prevBuffer[canvasY * prevStride + canvasX];
                         currPixel = prevPixel;
                     }
                 }
             }
+            // update by yorek.liu >> end
         }
     }
     return true;
@@ -263,10 +347,22 @@ long FrameSequenceState_webp::drawFrame(int frameNr,
     WebPDemuxer* demux = mFrameSequence.getDemuxer();
     ALOG_ASSERT(demux, "Cannot drawFrame, mDemux is NULL");
 #if WEBP_DEBUG
-    ALOGD("  drawFrame called for frame# %d, previous frame# %d", frameNr, previousFrameNr);
+    ALOGD("  drawFrame called for frame# %d, previous frame# %d, sampleSize %d", frameNr, previousFrameNr, sampleSize);
 #endif
     const int canvasWidth = mFrameSequence.getWidth();
     const int canvasHeight = mFrameSequence.getHeight();
+    // update by yorek.liu >> begin
+    const int downsampledWidth = canvasWidth / sampleSize;
+    const int downsampledHeight = canvasHeight / sampleSize;
+    if (sampleSize > 1 && mPreservedBuffer && (mPreservedBufferSize == canvasWidth * canvasHeight)) {
+#if WEBP_DEBUG
+        ALOGD("  delete the original mPreservedBuffer due to the sampleSize %d", sampleSize);
+#endif
+        delete[] mPreservedBuffer;
+        mPreservedBufferSize = downsampledWidth * downsampledHeight;
+        mPreservedBuffer = new Color8888[mPreservedBufferSize];
+    }
+    // update by yorek.liu >> end
     // Find the first frame to be decoded.
     int start = max(previousFrameNr + 1, 0);
     int earliestRequired = frameNr;
@@ -283,7 +379,10 @@ long FrameSequenceState_webp::drawFrame(int frameNr,
     ALOG_ASSERT(ok, "Could not retrieve frame# %d", start - 1);
     // Use preserve buffer only if needed.
     Color8888* prevBuffer = (frameNr == 0) ? outputPtr : mPreservedBuffer;
-    int prevStride = (frameNr == 0) ? outputPixelStride : canvasWidth;
+    // update by yorek.liu >> begin
+//    int prevStride = (frameNr == 0) ? outputPixelStride : canvasWidth;
+    int prevStride = (frameNr == 0) ? outputPixelStride : downsampledWidth;
+    // update by yorek.liu >> end
     Color8888* currBuffer = outputPtr;
     int currStride = outputPixelStride;
     for (int i = start; i <= frameNr; i++) {
@@ -304,20 +403,28 @@ long FrameSequenceState_webp::drawFrame(int frameNr,
         prevStride = currStride;
         currStride = tmpStride;
 #if WEBP_DEBUG
-        ALOGD("            prev = %p, curr = %p, out = %p, tmp = %p",
-              prevBuffer, currBuffer, outputPtr, mPreservedBuffer);
+        ALOGD("            prev = %p, curr = %p, out = %p, tmp = %p, prevStride = %d, currStride = %d",
+              prevBuffer, currBuffer, outputPtr, mPreservedBuffer, prevStride, currStride);
 #endif
         // Process this frame.
-        initializeFrame(currIter, currBuffer, currStride, prevIter, prevBuffer, prevStride);
+        // update by yorek.liu >> begin
+        initializeFrame(currIter, currBuffer, currStride, prevIter, prevBuffer, prevStride, sampleSize);
+//        initializeFrame(currIter, currBuffer, currStride, prevIter, prevBuffer, prevStride);
+        // update by yorek.liu >> end
         if (i == frameNr || !willBeCleared(currIter)) {
-            if (!decodeFrame(currIter, currBuffer, currStride, prevIter, prevBuffer, prevStride)) {
+            // update by yorek.liu >> begin
+            if (!decodeFrame(currIter, currBuffer, currStride, prevIter, prevBuffer, prevStride, sampleSize)) {
+            // update by yorek.liu >> end
                 ALOGE("Error decoding frame# %d", i);
                 return -1;
             }
         }
     }
     if (outputPtr != currBuffer) {
-        copyFrame(currBuffer, currStride, outputPtr, outputPixelStride, canvasWidth, canvasHeight);
+        // update by yorek.liu >> begin
+//        copyFrame(currBuffer, currStride, outputPtr, outputPixelStride, canvasWidth, canvasHeight);
+        copyFrame(currBuffer, currStride, outputPtr, outputPixelStride, downsampledWidth, downsampledHeight);
+        // update by yorek.liu >> end
     }
     // Return last frame's delay.
     const int frameCount = mFrameSequence.getFrameCount();
