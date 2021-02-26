@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.List;
 
+import xyz.yorek.glide.AnimatedWebpHeaderParser;
 import xyz.yorek.glide.framesequence.FrameSequenceDrawable;
 
 public class StreamFrameSequenceDecoder implements ResourceDecoder<InputStream, FrameSequenceDrawable> {
@@ -36,13 +37,20 @@ public class StreamFrameSequenceDecoder implements ResourceDecoder<InputStream, 
     @SuppressWarnings("ConstantConditions")
     @Override
     public boolean handles(@NonNull InputStream source, @NonNull Options options) throws IOException {
-        return !options.get(GifOptions.DISABLE_ANIMATION)
-                && ImageHeaderParserUtils.getType(parsers, source, byteArrayPool) == ImageHeaderParser.ImageType.GIF;
+        if (options.get(GifOptions.DISABLE_ANIMATION)) {
+            return false;
+        }
+        ImageHeaderParser.ImageType imageType = ImageHeaderParserUtils.getType(parsers, source, byteArrayPool);
+        if (imageType == ImageHeaderParser.ImageType.GIF) {
+            return true;
+        } else if (imageType == ImageHeaderParser.ImageType.WEBP_A) {
+            AnimatedWebpHeaderParser.WebpImageType webpImageType = AnimatedWebpHeaderParser.getType(source, byteArrayPool);
+            return AnimatedWebpHeaderParser.isAnimatedWebpType(webpImageType);
+        }
+
+        return false;
     }
 
-    /**
-     * 将 GIF 的 InputStream 转为 GifDrawableResource
-     */
     @Override
     public Resource<FrameSequenceDrawable> decode(@NonNull InputStream source, int width, int height, @NonNull Options options) throws IOException {
         byte[] data = inputStreamToBytes(source);
@@ -54,7 +62,7 @@ public class StreamFrameSequenceDecoder implements ResourceDecoder<InputStream, 
     }
 
     private static byte[] inputStreamToBytes(InputStream is) {
-        final int bufferSize = 16384;
+        final int bufferSize = 16 * 1024;
         ByteArrayOutputStream buffer = new ByteArrayOutputStream(bufferSize);
         try {
             int nRead;

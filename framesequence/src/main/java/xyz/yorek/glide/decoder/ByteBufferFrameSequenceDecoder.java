@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.List;
 
+import xyz.yorek.glide.AnimatedWebpHeaderParser;
 import xyz.yorek.glide.framesequence.FrameSequence;
 import xyz.yorek.glide.framesequence.FrameSequenceDrawable;
 
@@ -46,18 +47,34 @@ public class ByteBufferFrameSequenceDecoder implements ResourceDecoder<ByteBuffe
     @SuppressWarnings("ConstantConditions")
     @Override
     public boolean handles(@NonNull ByteBuffer source, @NonNull Options options) throws IOException {
-        return !options.get(GifOptions.DISABLE_ANIMATION)
-                && ImageHeaderParserUtils.getType(parsers, source) == ImageHeaderParser.ImageType.GIF;
+        if (options.get(GifOptions.DISABLE_ANIMATION)) {
+            return false;
+        }
+        ImageHeaderParser.ImageType imageType = ImageHeaderParserUtils.getType(parsers, source);
+        if (imageType == ImageHeaderParser.ImageType.GIF) {
+            return true;
+        } else if (imageType == ImageHeaderParser.ImageType.WEBP_A) {
+            source.rewind();
+            AnimatedWebpHeaderParser.WebpImageType webpImageType = AnimatedWebpHeaderParser.getType(source);
+            return AnimatedWebpHeaderParser.isAnimatedWebpType(webpImageType);
+        }
+
+        return false;
     }
 
     @Override
     public FrameSequenceDrawableResource decode(@NonNull ByteBuffer source, int width, int height, @NonNull Options options) throws IOException {
+        // TODO delete me after supporting webp downsample
+        boolean isAnimatedWebp = AnimatedWebpHeaderParser.isAnimatedWebpType(AnimatedWebpHeaderParser.getType(source));
+        source.rewind();
+//        boolean isAnimatedWebp = false;
+
         FrameSequence frameSequence = FrameSequence.decodeByteBuffer(source);
         if (frameSequence == null) {
             return null;
         }
         FrameSequenceDrawable drawable;
-        if (ENABLE_SAMPLE) {
+        if (ENABLE_SAMPLE && !isAnimatedWebp) {
             int sampleSize = calcSampleSize(frameSequence.getWidth(), frameSequence.getHeight(), width, height);
             drawable = new FrameSequenceDrawable(frameSequence, mProvider, sampleSize);
         } else {

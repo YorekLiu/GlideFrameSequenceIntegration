@@ -60,7 +60,9 @@ static jobject nativeDecodeByteBuffer(JNIEnv* env, jobject clazz,
         (reinterpret_cast<uint8_t*>(
             env->GetDirectBufferAddress(globalBuf))) + offset,
         limit,
-        globalBuf);
+        // update by yorek.liu to support decoding gif from ByteBuffer when webp enabled >> begin
+        /*globalBuf*/ NULL);
+        // update by yorek.liu >> end
     FrameSequence* frameSequence = FrameSequence::create(&stream);
     jobject finalSequence = createJavaFrameSequence(env, frameSequence);
     return finalSequence;

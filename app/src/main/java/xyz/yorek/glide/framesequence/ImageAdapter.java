@@ -3,15 +3,21 @@ package xyz.yorek.glide.framesequence;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.Transformation;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +83,19 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageHolder>
         GlideRequest<Drawable> glideRequests = GlideApp.with(mContext)
                 .load(url)
                 .placeholder(R.drawable.image_loading)
-                .error(R.drawable.image_error);
+                .error(R.drawable.image_error)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        Log.d(TAG, "resource class: " + resource.getClass().getSimpleName());
+                        return false;
+                    }
+                });
         if (mBitmapTrans != null) {
             glideRequests = glideRequests.transform(mBitmapTrans);
         }

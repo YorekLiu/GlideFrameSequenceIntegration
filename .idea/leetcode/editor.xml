@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="LeetcodeEditor">
+    <option name="projectConfig">
+      <map>
+        <entry key="$PROJECT_DIR$/../../java/leetcode-plugin/leetcode/editor/cn/[1178]Number of Valid Words for Each Puzzle.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="path" value="$PROJECT_DIR$/../../java/leetcode-plugin/leetcode/editor/cn/[1178]Number of Valid Words for Each Puzzle.java" />
+              <option name="questionId" value="1282" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../java/leetcode-plugin/leetcode/editor/cn/[2]Add Two Numbers.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="path" value="$PROJECT_DIR$/../../java/leetcode-plugin/leetcode/editor/cn/[2]Add Two Numbers.java" />
+              <option name="questionId" value="2" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

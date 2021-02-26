@@ -2,8 +2,10 @@
     <string name="app_name">GlideFrameSequenceIntegration</string>
 
     <string-array name="entries_spinner">
-        <item>144x144</item>
-        <item>336x336</item>
+        <item>336x336_gif</item>
+        <item>144x144_webp</item>
+        <item>144x144_gif</item>
+        <item>990_1050_webp</item>
     </string-array>
 
     <string-array name="transformation">
