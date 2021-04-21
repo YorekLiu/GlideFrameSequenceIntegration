@@ -57,6 +57,7 @@ public class ConstraintLayoutActivity extends AppCompatActivity {
             "https://video.billionbottle.com/d6e66dbb883a48f989b1b1d0e035bbbf/image/dynamic/71fcdca947d144b883949bbe368d60c3.gif?x-oss-process=image/resize,w_320/format,webp"
     };
     private static final String[] ANIM_GIF = {
+            "https://audiotest.cos.tx.xmcdn.com/storages/bee8-audiotest/84/53/CAoVXoEETGuDAAS2QgAANHsz.gif",
             "https://78.media.tumblr.com/a0c1be3183449f0d207a022c28f4bbf7/tumblr_p1p2cduAiA1wmghc4o1_500.gif",
             "https://78.media.tumblr.com/31ff4ea771940d2403323c1416b81064/tumblr_p1ymv2Xghn1qbt8b8o2_500.gif",
             "https://78.media.tumblr.com/45c7b305f0dbdb9a3c941be1d86aceca/tumblr_p202yd8Jz11uashjdo3_500.gif",

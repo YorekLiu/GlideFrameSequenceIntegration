@@ -207,7 +207,10 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
                     mBackBitmap = null;
                 } else if (mNextFrameToDecode >= 0 && mState == STATE_DECODING) {
                     schedule = true;
-                    mNextSwap = exceptionDuringDecode ? Long.MAX_VALUE : invalidateTimeMs + mLastSwap;
+                    // update by yorek.liu >> begin
+//                    mNextSwap = exceptionDuringDecode ? Long.MAX_VALUE : invalidateTimeMs + mLastSwap;
+                    mNextSwap = exceptionDuringDecode ? Long.MAX_VALUE : invalidateTimeMs + SystemClock.uptimeMillis();
+                    // update by yorek.liu >> end
                     mState = STATE_WAITING_TO_SWAP;
                 }
             }
