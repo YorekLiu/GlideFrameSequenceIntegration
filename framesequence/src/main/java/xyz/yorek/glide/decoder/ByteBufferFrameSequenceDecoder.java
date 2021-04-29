@@ -24,6 +24,7 @@ import xyz.yorek.glide.framesequence.FrameSequenceDrawable;
 public class ByteBufferFrameSequenceDecoder implements ResourceDecoder<ByteBuffer, FrameSequenceDrawable> {
 
     public static final boolean ENABLE_SAMPLE = true;
+    private static final boolean DEBUG = false;
 
     private static final String TAG = ByteBufferFrameSequenceDecoder.class.getSimpleName();
     private final List<ImageHeaderParser> parsers;
@@ -90,7 +91,7 @@ public class ByteBufferFrameSequenceDecoder implements ResourceDecoder<ByteBuffe
         // Although functionally equivalent to 0 for BitmapFactory, 1 is a safer default for our code
         // than 0.
         int sampleSize = Math.max(1, powerOfTwoSampleSize);
-        if (Log.isLoggable(TAG, Log.VERBOSE) && sampleSize > 1) {
+        if (DEBUG && sampleSize > 1) {
             Log.v(TAG, "Downsampling GIF"
                     + ", sampleSize: " + sampleSize
                     + ", target dimens: [" + targetWidth + "x" + targetHeight + "]"
