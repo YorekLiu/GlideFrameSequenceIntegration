@@ -1,9 +1,10 @@
 apply plugin: 'maven-publish'
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-def _artifactId = GLIDE_V480.toBoolean() ? 'framesequence-integration-480' : 'framesequence-integration'
+def _artifactId = 'framesequence-integration'
+def versionPrefix = GLIDE_V480.toBoolean() ? '480-' : ''
 group = GROUP
-version = VERSION
+version = versionPrefix + VERSION
 project.archivesBaseName = _artifactId
 
 def siteUrl = 'https://github.com/YorekLiu/GlideFrameSequenceIntegration'
