@@ -1,5 +1,4 @@
-apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'com.jfrog.bintray'
+apply plugin: 'maven-publish'
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 def _artifactId = GLIDE_V480.toBoolean() ? 'framesequence-integration-480' : 'framesequence-integration'
@@ -67,55 +66,72 @@ artifacts {
     archives javadocJar
 //    archives symbolJar
 }
-install {
-    repositories.mavenInstaller {
-        pom {
-            project {
-                packaging 'aar'
-                name 'Glide FrameSequence Integration'
-                description 'Glide framesequence integration'
-                url siteUrl
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                // Applies the component for the release build variant.
+                from components.release
 
-                groupId GROUP
-                artifactId _artifactId
-                version version
-
-                licenses {
-                    license {
-                        name 'The Apache Software License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-
-                developers {
-                    developer {
-                        id 'yorekliu'
-                        name 'Yorek Liu'
-                        email 'lyytogether@gmail.com'
-                    }
-                }
-                scm {
-                    connection gitUrl
-                    developerConnection gitUrl
-                    url siteUrl
-                }
+                // You can then customize attributes of the publication as shown below.
+                groupId = GROUP
+                artifactId = _artifactId
+                version = version
             }
         }
     }
 }
-bintray {
-    user = getRepositoryUsername()
-    key = getRepositoryPassword()
 
-    configurations = ['archives']
-    pkg {
-        repo = "maven"
-        name = "GlideFrameSequenceIntegration"
-        websiteUrl = siteUrl
-        vcsUrl = gitUrl
-        licenses = ["Apache-2.0"]
-        publish = true
-        publicDownloadNumbers = true
-    }
-}
+//install {
+//    repositories.mavenInstaller {
+//        pom {
+//            project {
+//                packaging 'aar'
+//                name 'Glide FrameSequence Integration'
+//                description 'Glide framesequence integration'
+//                url siteUrl
+//
+//                groupId GROUP
+//                artifactId _artifactId
+//                version version
+//
+//                licenses {
+//                    license {
+//                        name 'The Apache Software License, Version 2.0'
+//                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+//                    }
+//                }
+//
+//                developers {
+//                    developer {
+//                        id 'yorekliu'
+//                        name 'Yorek Liu'
+//                        email 'lyytogether@gmail.com'
+//                    }
+//                }
+//                scm {
+//                    connection gitUrl
+//                    developerConnection gitUrl
+//                    url siteUrl
+//                }
+//            }
+//        }
+//    }
+//}
+//bintray {
+//    user = getRepositoryUsername()
+//    key = getRepositoryPassword()
+//
+//    configurations = ['archives']
+//    pkg {
+//        repo = "maven"
+//        name = "GlideFrameSequenceIntegration"
+//        websiteUrl = siteUrl
+//        vcsUrl = gitUrl
+//        licenses = ["Apache-2.0"]
+//        publish = true
+//        publicDownloadNumbers = true
+//    }
+//}
 ////////////////////////////////////////////////////////////////////////////////////////////////////
