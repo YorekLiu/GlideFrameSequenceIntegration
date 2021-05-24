@@ -38,9 +38,9 @@ android {
 dependencies {
     if (PUBLISH.toBoolean()) {
         if (GLIDE_V480.toBoolean()) {
-            implementation "xyz.yorek.glide:framesequence-integration-480:$VERSION"
+            implementation "com.github.YorekLiu:GlideFrameSequenceIntegration:${VERSION}-480"
         } else {
-            implementation "xyz.yorek.glide:framesequence-integration:$VERSION"
+            implementation "com.github.YorekLiu:GlideFrameSequenceIntegration:$VERSION"
         }
     } else {
         implementation project(':framesequence')

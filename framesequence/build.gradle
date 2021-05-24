@@ -46,6 +46,6 @@ dependencies {
     annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
 }
 
-if (PUBLISH.toBoolean()) {
-    apply from: "${rootProject.projectDir}/gradle/upload.gradle"
-}
+//if (PUBLISH.toBoolean()) {
+//    apply from: "${rootProject.projectDir}/gradle/upload.gradle"
+//}

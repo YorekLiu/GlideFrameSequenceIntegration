@@ -1,6 +1,6 @@
 # GlideFrameSequenceIntegration 
 
-[ ![Download](https://api.bintray.com/packages/yorekliu/maven/GlideFrameSequenceIntegration/images/download.svg) ](https://bintray.com/yorekliu/maven/GlideFrameSequenceIntegration/_latestVersion)
+![JitPack](https://img.shields.io/jitpack/v/github/YorekLiu/GlideFrameSequenceIntegration?style=flat-square)
 
 可以解码 gif 动图与 webp 动图的，与 glide API 完美结合的库。
 
@@ -15,23 +15,28 @@
 
 ### 添加依赖
 
+先添加JitPack仓库地址：
+
+```gradle
+allprojects {
+	repositories {
+		...
+		maven { url 'https://jitpack.io' }
+	}
+}
+```
+
 请先启用 Glide 的 [Generated API](https://bumptech.github.io/glide/doc/generatedapi.html) 相关功能后， 按照 Glide 版本添加对应依赖项即可：
 
 ```gradle
 // glide 版本在4.9.0及以后
-implementation 'xyz.yorek.glide:framesequence-integration:${lastest-version}'
+implementation 'com.github.YorekLiu:GlideFrameSequenceIntegration:${lastest-version}'
 
-// glide 版本在4.8.0及以前
-implementation 'xyz.yorek.glide:framesequence-integration-480:${lastest-version}'
+// glide 版本在4.8.0及以前，需要在基准版本前面添加"480_"后缀，例如1.1.0_beta04_480
+implementation 'com.github.YorekLiu:GlideFrameSequenceIntegration:${lastest-version}-480'
 ```
 
 > 如何简单判断有没有开启 [Generated API](https://bumptech.github.io/glide/doc/generatedapi.html)？一般来说，能在代码中使用`GlideApp`加载图片即可。
-
-若无法下载到本库，请添加如下仓库地址：
-
-```gradle
-maven { url "https://dl.bintray.com/yorekliu/maven" }
-```
 
 对于部分限制了ndk仅为`armeabi`的工程，为了方便这里也提供了对应的`libframesqeuence.so`以及`libwebp-decoder.so`，实际上自行将`armeabi-v7a`中的复制出来，这是一样的效果。  
 文件位于`extra`目录下。

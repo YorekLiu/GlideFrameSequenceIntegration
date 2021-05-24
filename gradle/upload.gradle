@@ -1,138 +1,138 @@
-apply plugin: 'maven-publish'
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-def _artifactId = 'framesequence-integration'
-def versionPrefix = GLIDE_V480.toBoolean() ? '480-' : ''
-group = GROUP
-version = versionPrefix + VERSION
-project.archivesBaseName = _artifactId
-
-def siteUrl = 'https://github.com/YorekLiu/GlideFrameSequenceIntegration'
-def gitUrl = 'git@github.com:YorekLiu/GlideFrameSequenceIntegration.git'
-def getReleaseRepositoryUrl() {
-    return hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL : readPropertyFromLocalProperties('RELEASE_REPOSITORY_URL')
-}
-def getRepositoryUsername() {
-    return hasProperty('REPOSITORY_USERNAME') ? REPOSITORY_USERNAME : readPropertyFromLocalProperties('REPOSITORY_USERNAME')
-}
-def getRepositoryPassword() {
-    return hasProperty('REPOSITORY_PASSWORD') ? REPOSITORY_PASSWORD : readPropertyFromLocalProperties('REPOSITORY_PASSWORD')
-}
-def readPropertyFromLocalProperties(String key) {
-    Properties properties = new Properties()
-    try {
-        properties.load(project.rootProject.file('local.properties').newDataInputStream())
-    } catch (Exception e) {
-        println("load local properties failed msg:${e.message}")
-    }
-    return properties.getProperty(key)
-}
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier "sources"
-}
-task javadoc(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    failOnError false
-}
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-//task symbolJar(type: Jar, dependsOn: 'build') {
-//    classifier = "so-symbols"
-//    from file("build/intermediates/cmake/release/obj/")
-//    boolean hasNativeBuildTask = false
-//    tasks.each { task ->
-//        if (task.getName().startsWith("externalNativeBuild")) {
-//            hasNativeBuildTask = true
-//        }
-//    }
+//apply plugin: 'maven-publish'
 //
-//    if (!hasNativeBuildTask) {
-//        return
-//    }
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+//def _artifactId = 'framesequence-integration'
+//def versionPrefix = GLIDE_V480.toBoolean() ? '480-' : ''
+//group = GROUP
+//version = versionPrefix + VERSION
+//project.archivesBaseName = _artifactId
 //
-//    if (hasFlavors) {
-//        variant.productFlavors.each { flavor ->
-//            from file("build/intermediates/cmake/${flavor.name}/release/obj/")
-//        }
-//    } else {
-//        from file("build/intermediates/cmake/release/obj/")
-//    }
+//def siteUrl = 'https://github.com/YorekLiu/GlideFrameSequenceIntegration'
+//def gitUrl = 'git@github.com:YorekLiu/GlideFrameSequenceIntegration.git'
+//def getReleaseRepositoryUrl() {
+//    return hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL : readPropertyFromLocalProperties('RELEASE_REPOSITORY_URL')
 //}
-artifacts {
-    archives sourcesJar
-    archives javadocJar
-//    archives symbolJar
-}
-afterEvaluate {
-    publishing {
-        publications {
-            // Creates a Maven publication called "release".
-            release(MavenPublication) {
-                // Applies the component for the release build variant.
-                from components.release
-
-                // You can then customize attributes of the publication as shown below.
-                groupId = GROUP
-                artifactId = _artifactId
-                version = version
-            }
-        }
-    }
-}
-
-//install {
-//    repositories.mavenInstaller {
-//        pom {
-//            project {
-//                packaging 'aar'
-//                name 'Glide FrameSequence Integration'
-//                description 'Glide framesequence integration'
-//                url siteUrl
+//def getRepositoryUsername() {
+//    return hasProperty('REPOSITORY_USERNAME') ? REPOSITORY_USERNAME : readPropertyFromLocalProperties('REPOSITORY_USERNAME')
+//}
+//def getRepositoryPassword() {
+//    return hasProperty('REPOSITORY_PASSWORD') ? REPOSITORY_PASSWORD : readPropertyFromLocalProperties('REPOSITORY_PASSWORD')
+//}
+//def readPropertyFromLocalProperties(String key) {
+//    Properties properties = new Properties()
+//    try {
+//        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+//    } catch (Exception e) {
+//        println("load local properties failed msg:${e.message}")
+//    }
+//    return properties.getProperty(key)
+//}
+//task sourcesJar(type: Jar) {
+//    from android.sourceSets.main.java.srcDirs
+//    classifier "sources"
+//}
+//task javadoc(type: Javadoc) {
+//    source = android.sourceSets.main.java.srcDirs
+//    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+//    failOnError false
+//}
+//task javadocJar(type: Jar, dependsOn: javadoc) {
+//    classifier = 'javadoc'
+//    from javadoc.destinationDir
+//}
+////task symbolJar(type: Jar, dependsOn: 'build') {
+////    classifier = "so-symbols"
+////    from file("build/intermediates/cmake/release/obj/")
+////    boolean hasNativeBuildTask = false
+////    tasks.each { task ->
+////        if (task.getName().startsWith("externalNativeBuild")) {
+////            hasNativeBuildTask = true
+////        }
+////    }
+////
+////    if (!hasNativeBuildTask) {
+////        return
+////    }
+////
+////    if (hasFlavors) {
+////        variant.productFlavors.each { flavor ->
+////            from file("build/intermediates/cmake/${flavor.name}/release/obj/")
+////        }
+////    } else {
+////        from file("build/intermediates/cmake/release/obj/")
+////    }
+////}
+//artifacts {
+//    archives sourcesJar
+//    archives javadocJar
+////    archives symbolJar
+//}
+//afterEvaluate {
+//    publishing {
+//        publications {
+//            // Creates a Maven publication called "release".
+//            release(MavenPublication) {
+//                // Applies the component for the release build variant.
+//                from components.release
 //
-//                groupId GROUP
-//                artifactId _artifactId
-//                version version
-//
-//                licenses {
-//                    license {
-//                        name 'The Apache Software License, Version 2.0'
-//                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-//                    }
-//                }
-//
-//                developers {
-//                    developer {
-//                        id 'yorekliu'
-//                        name 'Yorek Liu'
-//                        email 'lyytogether@gmail.com'
-//                    }
-//                }
-//                scm {
-//                    connection gitUrl
-//                    developerConnection gitUrl
-//                    url siteUrl
-//                }
+//                // You can then customize attributes of the publication as shown below.
+//                groupId = GROUP
+//                artifactId = _artifactId
+//                version = version
 //            }
 //        }
 //    }
 //}
-//bintray {
-//    user = getRepositoryUsername()
-//    key = getRepositoryPassword()
 //
-//    configurations = ['archives']
-//    pkg {
-//        repo = "maven"
-//        name = "GlideFrameSequenceIntegration"
-//        websiteUrl = siteUrl
-//        vcsUrl = gitUrl
-//        licenses = ["Apache-2.0"]
-//        publish = true
-//        publicDownloadNumbers = true
-//    }
-//}
-////////////////////////////////////////////////////////////////////////////////////////////////////
+////install {
+////    repositories.mavenInstaller {
+////        pom {
+////            project {
+////                packaging 'aar'
+////                name 'Glide FrameSequence Integration'
+////                description 'Glide framesequence integration'
+////                url siteUrl
+////
+////                groupId GROUP
+////                artifactId _artifactId
+////                version version
+////
+////                licenses {
+////                    license {
+////                        name 'The Apache Software License, Version 2.0'
+////                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+////                    }
+////                }
+////
+////                developers {
+////                    developer {
+////                        id 'yorekliu'
+////                        name 'Yorek Liu'
+////                        email 'lyytogether@gmail.com'
+////                    }
+////                }
+////                scm {
+////                    connection gitUrl
+////                    developerConnection gitUrl
+////                    url siteUrl
+////                }
+////            }
+////        }
+////    }
+////}
+////bintray {
+////    user = getRepositoryUsername()
+////    key = getRepositoryPassword()
+////
+////    configurations = ['archives']
+////    pkg {
+////        repo = "maven"
+////        name = "GlideFrameSequenceIntegration"
+////        websiteUrl = siteUrl
+////        vcsUrl = gitUrl
+////        licenses = ["Apache-2.0"]
+////        publish = true
+////        publicDownloadNumbers = true
+////    }
+////}
+//////////////////////////////////////////////////////////////////////////////////////////////////////
