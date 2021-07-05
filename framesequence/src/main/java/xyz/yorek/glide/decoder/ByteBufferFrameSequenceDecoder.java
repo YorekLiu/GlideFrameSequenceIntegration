@@ -20,6 +20,7 @@ import java.util.List;
 import xyz.yorek.glide.AnimatedWebpHeaderParser;
 import xyz.yorek.glide.framesequence.FrameSequence;
 import xyz.yorek.glide.framesequence.FrameSequenceDrawable;
+import xyz.yorek.glide.module.FrameSequenceGlideExtension;
 
 public class ByteBufferFrameSequenceDecoder implements ResourceDecoder<ByteBuffer, FrameSequenceDrawable> {
 
@@ -80,6 +81,14 @@ public class ByteBufferFrameSequenceDecoder implements ResourceDecoder<ByteBuffe
             drawable = new FrameSequenceDrawable(frameSequence, mProvider, sampleSize);
         } else {
             drawable = new FrameSequenceDrawable(frameSequence, mProvider);
+        }
+        Integer loopBehavior = options.get(FrameSequenceGlideExtension.LOOP_BEHAVIOR);
+        if (loopBehavior != null) {
+            drawable.setLoopBehavior(loopBehavior);
+        }
+        Integer loopCount = options.get(FrameSequenceGlideExtension.LOOP_COUNT);
+        if (loopCount != null) {
+            drawable.setLoopCount(loopCount);
         }
         return new FrameSequenceDrawableResource(drawable);
     }
