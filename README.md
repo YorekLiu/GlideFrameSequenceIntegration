@@ -19,10 +19,10 @@
 
 ```gradle
 allprojects {
-	repositories {
-		...
-		maven { url 'https://jitpack.io' }
-	}
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
 }
 ```
 
@@ -32,7 +32,7 @@ allprojects {
 // glide 版本在4.9.0及以后
 implementation 'com.github.YorekLiu:GlideFrameSequenceIntegration:${lastest-version}'
 
-// glide 版本在4.8.0及以前，需要在基准版本前面添加"480_"后缀，例如1.1.0_beta04_480
+// glide 版本在4.8.0及以前，需要在基准版本后面添加"-480"的后缀，例如1.1.0-beta04-480
 implementation 'com.github.YorekLiu:GlideFrameSequenceIntegration:${lastest-version}-480'
 ```
 
