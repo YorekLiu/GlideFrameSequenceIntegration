@@ -4,6 +4,6 @@
 
 - 为`FrameSequenceDrawable` 添加 transform 支持
 
-### 1.1.0-beta02
+### 1.2.0
 
-- 修复 `FrameSequenceDrawable` 偶尔不太流畅的问题
+- 添加 `setLoopBehavior`、`setLoopCount`、`disableFrameSequenceSample` API
