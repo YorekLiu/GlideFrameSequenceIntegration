@@ -49,3 +49,31 @@ dependencies {
 //if (PUBLISH.toBoolean()) {
 //    apply from: "${rootProject.projectDir}/gradle/upload.gradle"
 //}
+
+if (PUBLISH_LOCAL) {
+    apply plugin: 'maven'
+
+    Properties properties = new Properties()
+    try {
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    } catch (Exception e) {
+        println("load local properties failed msg:${e.message}")
+    }
+
+    def localRepoUrl = properties.getProperty('LOCAL_REPO_URL')
+    def localUserName = properties.getProperty('ARTIFACTORY_USER_NAME')
+    def localPwd = properties.getProperty('ARTIFACTORY_PASSWORD')
+    def localGroupId = properties.getProperty('GROUPID')
+    def localArtifactId = properties.getProperty('ARTIFACTID')
+
+    uploadArchives {
+        repositories.mavenDeployer {
+            repository(url: localRepoUrl) {
+                authentication(userName: localUserName, password: localPwd)
+                pom.groupId = localGroupId
+                pom.artifactId = localArtifactId
+                pom.version = VERSION
+            }
+        }
+    }
+}

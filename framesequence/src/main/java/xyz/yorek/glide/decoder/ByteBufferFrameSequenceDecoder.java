@@ -20,12 +20,11 @@ import java.util.List;
 import xyz.yorek.glide.AnimatedWebpHeaderParser;
 import xyz.yorek.glide.framesequence.FrameSequence;
 import xyz.yorek.glide.framesequence.FrameSequenceDrawable;
-import xyz.yorek.glide.module.FrameSequenceGlideExtension;
+import xyz.yorek.glide.framesequence.FrameSequenceOptions;
 
 public class ByteBufferFrameSequenceDecoder implements ResourceDecoder<ByteBuffer, FrameSequenceDrawable> {
 
-    public static final boolean ENABLE_SAMPLE = true;
-    private static final boolean DEBUG = false;
+    public static boolean DEBUG = false;
 
     private static final String TAG = ByteBufferFrameSequenceDecoder.class.getSimpleName();
     private final List<ImageHeaderParser> parsers;
@@ -66,27 +65,26 @@ public class ByteBufferFrameSequenceDecoder implements ResourceDecoder<ByteBuffe
 
     @Override
     public FrameSequenceDrawableResource decode(@NonNull ByteBuffer source, int width, int height, @NonNull Options options) throws IOException {
-        // TODO delete me after supporting webp downsample
+        // FIXME delete me after supporting webp downsample
         boolean isAnimatedWebp = AnimatedWebpHeaderParser.isAnimatedWebpType(AnimatedWebpHeaderParser.getType(source));
         source.rewind();
-//        boolean isAnimatedWebp = false;
 
         FrameSequence frameSequence = FrameSequence.decodeByteBuffer(source);
         if (frameSequence == null) {
             return null;
         }
         FrameSequenceDrawable drawable;
-        if (ENABLE_SAMPLE && !isAnimatedWebp) {
+        if (options.get(FrameSequenceOptions.ENABLE_SAMPLE) && !isAnimatedWebp) {
             int sampleSize = calcSampleSize(frameSequence.getWidth(), frameSequence.getHeight(), width, height);
             drawable = new FrameSequenceDrawable(frameSequence, mProvider, sampleSize);
         } else {
             drawable = new FrameSequenceDrawable(frameSequence, mProvider);
         }
-        Integer loopBehavior = options.get(FrameSequenceGlideExtension.LOOP_BEHAVIOR);
+        Integer loopBehavior = options.get(FrameSequenceOptions.LOOP_BEHAVIOR);
         if (loopBehavior != null) {
             drawable.setLoopBehavior(loopBehavior);
         }
-        Integer loopCount = options.get(FrameSequenceGlideExtension.LOOP_COUNT);
+        Integer loopCount = options.get(FrameSequenceOptions.LOOP_COUNT);
         if (loopCount != null) {
             drawable.setLoopCount(loopCount);
         }

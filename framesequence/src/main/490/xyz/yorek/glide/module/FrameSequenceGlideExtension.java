@@ -8,13 +8,12 @@ import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.annotation.GlideExtension;
 import com.bumptech.glide.annotation.GlideOption;
 import com.bumptech.glide.annotation.GlideType;
-import com.bumptech.glide.load.Option;
-import com.bumptech.glide.load.Options;
 import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.request.BaseRequestOptions;
 import com.bumptech.glide.request.RequestOptions;
 
 import xyz.yorek.glide.framesequence.FrameSequenceDrawable;
+import xyz.yorek.glide.framesequence.FrameSequenceOptions;
 import xyz.yorek.glide.transformation.FrameSequenceDrawableTransformation;
 
 @GlideExtension
@@ -23,9 +22,6 @@ public class FrameSequenceGlideExtension {
     private final static RequestOptions DECODE_TYPE_FRAME_SEQUENCE = RequestOptions
             .decodeTypeOf(FrameSequenceDrawable.class)
             .lock();
-
-    public final static Option<Integer> LOOP_BEHAVIOR = Option.memory("xyz.yorek.glide.module.loop_behavior");
-    public final static Option<Integer> LOOP_COUNT = Option.memory("xyz.yorek.glide.module.loop_count");
 
     private FrameSequenceGlideExtension() {}
 
@@ -46,11 +42,16 @@ public class FrameSequenceGlideExtension {
 
     @GlideOption
     public static BaseRequestOptions<?> setLoopBehavior(BaseRequestOptions<?> requestBuilder, int loopBehavior) {
-        return requestBuilder.set(LOOP_BEHAVIOR, loopBehavior);
+        return requestBuilder.set(FrameSequenceOptions.LOOP_BEHAVIOR, loopBehavior);
     }
 
     @GlideOption
     public static BaseRequestOptions<?> setLoopCount(BaseRequestOptions<?> requestBuilder, int loopCount) {
-        return requestBuilder.set(LOOP_COUNT, loopCount);
+        return requestBuilder.set(FrameSequenceOptions.LOOP_COUNT, loopCount);
+    }
+
+    @GlideOption
+    public static BaseRequestOptions<?> disableFrameSequenceSample(BaseRequestOptions<?> requestBuilder) {
+        return requestBuilder.set(FrameSequenceOptions.ENABLE_SAMPLE, false);
     }
 }
