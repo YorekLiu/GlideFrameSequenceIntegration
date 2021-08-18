@@ -32,7 +32,7 @@ allprojects {
 // glide 版本在4.9.0及以后
 implementation 'com.github.YorekLiu:GlideFrameSequenceIntegration:${lastest-version}'
 
-// glide 版本在4.8.0及以前，需要在基准版本后面添加"-480"的后缀，例如1.1.0-beta04-480
+// glide 版本在4.8.0及以前，需要在基准版本前面添加"-480"后缀，例如1.2.0-480
 implementation 'com.github.YorekLiu:GlideFrameSequenceIntegration:${lastest-version}-480'
 ```
 

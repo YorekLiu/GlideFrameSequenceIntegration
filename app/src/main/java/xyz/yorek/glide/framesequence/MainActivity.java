@@ -23,6 +23,7 @@ import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
+import xyz.yorek.glide.decoder.ByteBufferFrameSequenceDecoder;
 import xyz.yorek.glide.framesequence.sample.R;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ByteBufferFrameSequenceDecoder.DEBUG = true;
 
         final ImageView ivGlideDefault = findViewById(R.id.ivGlideDefault);
         final ImageView ivFrameSequence = findViewById(R.id.ivFrameSequence);
@@ -67,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
 //                    .asFrameSequence()
                     .load(getDrawable(imageViewSpinner))
 //                    .transform(new MultiTransformation<>(new CenterCrop(), new RoundedCorners(_16dp)))
+                    .disableFrameSequenceSample()
                     .listener(new RequestListener<Drawable>() {
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -81,6 +84,22 @@ public class MainActivity extends AppCompatActivity {
                     })
                     .into(ivFrameSequence);
         });
+
+        GlideApp.with(this)
+                .load("https://fdfs.xmcdn.com/storages/0a89-audiofreehighqps/E0/93/CMCoOSEEwbh_AALtvgDGzfuG.gif")
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        Log.d("MainActivity", "btnFrameSequence2 resource class: " + resource.getClass().getSimpleName());
+                        return false;
+                    }
+                })
+                .into((ImageView) findViewById(R.id.ivFrameSequence2));
     }
 
     private void updateImageViewSize(double size, ImageView... imageViews) {
@@ -100,6 +119,8 @@ public class MainActivity extends AppCompatActivity {
                 return R.drawable.aaa_webp;
             case 2:
                 return R.drawable.bbb;
+            case 3:
+                return R.drawable.gif_116_70;
             default:
                 return R.drawable.native_crash_webp;
         }

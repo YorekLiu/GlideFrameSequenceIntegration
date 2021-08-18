@@ -13,6 +13,7 @@ import com.bumptech.glide.request.BaseRequestOptions;
 import com.bumptech.glide.request.RequestOptions;
 
 import xyz.yorek.glide.framesequence.FrameSequenceDrawable;
+import xyz.yorek.glide.framesequence.FrameSequenceOptions;
 import xyz.yorek.glide.transformation.FrameSequenceDrawableTransformation;
 
 @GlideExtension
@@ -37,5 +38,20 @@ public class FrameSequenceGlideExtension {
     @GlideOption(override = GlideOption.OVERRIDE_EXTEND)
     public static BaseRequestOptions<?> optionalTransform(BaseRequestOptions<?> requestBuilder, @NonNull Transformation<Bitmap> transformation) {
         return requestBuilder.optionalTransform(FrameSequenceDrawable.class, new FrameSequenceDrawableTransformation(transformation));
+    }
+
+    @GlideOption
+    public static BaseRequestOptions<?> setLoopBehavior(BaseRequestOptions<?> requestBuilder, int loopBehavior) {
+        return requestBuilder.set(FrameSequenceOptions.LOOP_BEHAVIOR, loopBehavior);
+    }
+
+    @GlideOption
+    public static BaseRequestOptions<?> setLoopCount(BaseRequestOptions<?> requestBuilder, int loopCount) {
+        return requestBuilder.set(FrameSequenceOptions.LOOP_COUNT, loopCount);
+    }
+
+    @GlideOption
+    public static BaseRequestOptions<?> disableFrameSequenceSample(BaseRequestOptions<?> requestBuilder) {
+        return requestBuilder.set(FrameSequenceOptions.ENABLE_SAMPLE, false);
     }
 }

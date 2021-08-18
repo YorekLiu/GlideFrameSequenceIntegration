@@ -19,6 +19,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+@SuppressWarnings("unused")
 public class FrameSequenceDrawable extends Drawable implements Animatable, Runnable {
     private static final String TAG = "FrameSequence";
     /**
@@ -57,7 +58,7 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
     // update by yorek.liu >> end
     public interface BitmapProvider {
         /**
-         * Called by FrameSequenceDrawable to aquire an 8888 Bitmap with minimum dimensions.
+         * Called by FrameSequenceDrawable to acquire an 8888 Bitmap with minimum dimensions.
          */
         Bitmap acquireBitmap(int minWidth, int minHeight);
         /**
@@ -68,7 +69,7 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
          */
         void releaseBitmap(Bitmap bitmap);
     }
-    private static BitmapProvider sAllocatingBitmapProvider = new BitmapProvider() {
+    private static final BitmapProvider sAllocatingBitmapProvider = new BitmapProvider() {
         @Override
         public Bitmap acquireBitmap(int minWidth, int minHeight) {
             return Bitmap.createBitmap(minWidth, minHeight, Bitmap.Config.ARGB_8888);
@@ -117,7 +118,7 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
         mLoopBehavior = loopBehavior;
     }
     /**
-     * Set the number of loops in LOOP_FINITE mode. The number must be a postive integer.
+     * Set the number of loops in LOOP_FINITE mode. The number must be a positive integer.
      */
     public void setLoopCount(int loopCount) {
         mLoopCount = loopCount;
@@ -144,7 +145,7 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
     private int mLoopBehavior = LOOP_DEFAULT;
     private int mLoopCount = 1;
     // update by yorek.liu >> begin
-    private int mSampleSize = 1;
+    private final int mSampleSize;
     // update by yorek.liu >> end
     private long mLastSwap;
     private long mNextSwap;
@@ -155,11 +156,11 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
     // save the transferred bitmap to draw, don't scale the bitmap to make it clear.
     private Bitmap mBackTransferredBitmap;
     // update by yorek.liu >> end
-    private RectF mTempRectF = new RectF();
+    private final RectF mTempRectF = new RectF();
     /**
      * Runs on decoding thread, only modifies mBackBitmap's pixels
      */
-    private Runnable mDecodeRunnable = new Runnable() {
+    private final Runnable mDecodeRunnable = new Runnable() {
         @Override
         public void run() {
             int nextFrame;
@@ -207,10 +208,7 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
                     mBackBitmap = null;
                 } else if (mNextFrameToDecode >= 0 && mState == STATE_DECODING) {
                     schedule = true;
-                    // update by yorek.liu >> begin
-//                    mNextSwap = exceptionDuringDecode ? Long.MAX_VALUE : invalidateTimeMs + mLastSwap;
-                    mNextSwap = exceptionDuringDecode ? Long.MAX_VALUE : invalidateTimeMs + SystemClock.uptimeMillis();
-                    // update by yorek.liu >> end
+                    mNextSwap = exceptionDuringDecode ? Long.MAX_VALUE : invalidateTimeMs + mLastSwap;
                     mState = STATE_WAITING_TO_SWAP;
                 }
             }
@@ -229,7 +227,7 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
             // update by yorek.liu >> end
         }
     };
-    private Runnable mFinishedCallbackRunnable = new Runnable() {
+    private final Runnable mFinishedCallbackRunnable = new Runnable() {
         @Override
         public void run() {
             synchronized (mLock) {
