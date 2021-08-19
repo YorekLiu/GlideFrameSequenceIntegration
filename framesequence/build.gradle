@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.library'
+    id 'maven'
 }
 
 android {
@@ -51,8 +52,6 @@ dependencies {
 //}
 
 if (PUBLISH_LOCAL) {
-    apply plugin: 'maven'
-
     Properties properties = new Properties()
     try {
         properties.load(project.rootProject.file('local.properties').newDataInputStream())
