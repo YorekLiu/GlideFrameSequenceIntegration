@@ -74,7 +74,7 @@ public class ByteBufferFrameSequenceDecoder implements ResourceDecoder<ByteBuffe
             return null;
         }
         FrameSequenceDrawable drawable;
-        if (options.get(FrameSequenceOptions.ENABLE_SAMPLE) && !isAnimatedWebp) {
+        if (options.get(FrameSequenceOptions.ENABLE_SAMPLE)/* && !isAnimatedWebp */) {
             int sampleSize = calcSampleSize(frameSequence.getWidth(), frameSequence.getHeight(), width, height);
             drawable = new FrameSequenceDrawable(frameSequence, mProvider, sampleSize);
         } else {

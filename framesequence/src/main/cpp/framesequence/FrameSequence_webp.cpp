@@ -237,7 +237,6 @@ void FrameSequenceState_webp::initializeFrame(const WebPIterator& currIter, Colo
     }
 }
 // update by yorek.liu >> begin
-bool FrameSequenceState_webp::decodeFrame(const WebPIterator& currIter, Color8888* currBuffer,
                                           int currStride, const WebPIterator& prevIter, const Color8888* prevBuffer, int prevStride, int sampleSize) {
 // update by yorek.liu >> end
     // update by yorek.liu >> begin
@@ -247,12 +246,13 @@ bool FrameSequenceState_webp::decodeFrame(const WebPIterator& currIter, Color888
     mDecoderConfig.output.u.RGBA.rgba = (uint8_t*)dst;
     mDecoderConfig.output.u.RGBA.stride = currStride * 4;
     // update by yorek.liu >> begin
+    // mDecoderConfig.output.u.RGBA.size = mDecoderConfig.output.u.RGBA.stride * currIter.height;
     mDecoderConfig.output.u.RGBA.size = mDecoderConfig.output.u.RGBA.stride * (currIter.height / sampleSize);
 //    mDecoderConfig.output.is_external_memory = 1;
     // add by yorek.liu to scale
     if (sampleSize > 1) {
         mDecoderConfig.options.no_fancy_upsampling = 1;
-        mDecoderConfig.options.use_scaling = 1;
+        mDecoderConfig.options.use_scaling = true;
         mDecoderConfig.options.scaled_width = currIter.width / sampleSize;
         mDecoderConfig.options.scaled_height = currIter.height / sampleSize;
     }

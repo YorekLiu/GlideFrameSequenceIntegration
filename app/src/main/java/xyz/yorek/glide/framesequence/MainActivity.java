@@ -69,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
 //                    .asFrameSequence()
                     .load(getDrawable(imageViewSpinner))
 //                    .transform(new MultiTransformation<>(new CenterCrop(), new RoundedCorners(_16dp)))
-                    .disableFrameSequenceSample()
                     .listener(new RequestListener<Drawable>() {
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -86,20 +85,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         GlideApp.with(this)
-                .load("https://fdfs.xmcdn.com/storages/0a89-audiofreehighqps/E0/93/CMCoOSEEwbh_AALtvgDGzfuG.gif")
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        Log.d("MainActivity", "btnFrameSequence2 resource class: " + resource.getClass().getSimpleName());
-                        return false;
-                    }
-                })
+                .load(R.drawable.test_static)
                 .into((ImageView) findViewById(R.id.ivFrameSequence2));
+
+        GlideApp.with(this)
+                .load(R.drawable.test_static)
+                .into((ImageView) findViewById(R.id.ivFrameSequence3));
     }
 
     private void updateImageViewSize(double size, ImageView... imageViews) {
