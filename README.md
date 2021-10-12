@@ -1,6 +1,6 @@
 # GlideFrameSequenceIntegration 
 
-![JitPack](https://img.shields.io/jitpack/v/github/YorekLiu/GlideFrameSequenceIntegration?style=flat-square)
+[![](https://jitpack.io/v/YorekLiu/GlideFrameSequenceIntegration.svg)](https://jitpack.io/#YorekLiu/GlideFrameSequenceIntegration)
 
 可以解码 gif 动图与 webp 动图的，与 glide API 完美结合的库。
 
