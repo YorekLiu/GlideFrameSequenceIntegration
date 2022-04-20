@@ -89,6 +89,7 @@ public class NetworkImageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("FrameSequence加载网络webp、gif");
         setContentView(R.layout.activity_network_image);
 
         mTextView = (TextView) findViewById(R.id.webp_image_type);
