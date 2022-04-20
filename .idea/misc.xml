@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ASMIdeaPluginConfiguration">
+    <asm skipDebug="false" skipFrames="false" skipCode="false" expandFrames="false" />
+    <groovy codeStyle="LEGACY" />
+  </component>
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/Liuya/Code/opensource/GlideFrameSequenceIntegration/app/src/main/res/layout/activity_cl.xml" value="0.302536231884058" />
+        <entry key="..\:/Users/Liuya/Code/opensource/GlideFrameSequenceIntegration/app/src/main/res/layout/activity_main.xml" value="0.3220108695652174" />
+        <entry key="..\:/Users/Liuya/Code/opensource/GlideFrameSequenceIntegration/app/src/main/res/layout/recycler_item_main.xml" value="0.4692028985507246" />
+        <entry key="..\:/Users/Liuya/Code/opensource/GlideFrameSequenceIntegration/app/src/main/res/menu/menu_cl.xml" value="0.5328125" />
+        <entry key="..\:/Users/Liuya/Code/opensource/GlideFrameSequenceIntegration/app/src/main/res/menu/menu_main.xml" value="0.5328125" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>

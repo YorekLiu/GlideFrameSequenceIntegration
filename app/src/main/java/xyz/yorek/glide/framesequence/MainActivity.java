@@ -1,27 +1,27 @@
 package xyz.yorek.glide.framesequence;
 
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.TypedValue;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.MultiTransformation;
-import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.bumptech.glide.load.resource.gif.GifDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import xyz.yorek.glide.framesequence.sample.R;
 
@@ -30,82 +30,135 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("FrameSequence效果");
         setContentView(R.layout.activity_main);
-
-        final ImageView ivGlideDefault = findViewById(R.id.ivGlideDefault);
-        final ImageView ivFrameSequence = findViewById(R.id.ivFrameSequence);
-
-        final TextView etSize = findViewById(R.id.etSize);
-        findViewById(R.id.btnSubmitSize).setOnClickListener(v -> {
-            double size = Double.parseDouble(etSize.getText().toString());
-            updateImageViewSize(size, ivGlideDefault, ivFrameSequence);
-        });
-
-        final int _16dp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16F, getResources().getDisplayMetrics());
-        final Spinner imageViewSpinner = findViewById(R.id.spinner);
-        findViewById(R.id.btnGlideDefault).setOnClickListener(v -> {
-            GlideApp.with(this)
-                    .asGif()
-                    .load(getDrawable(imageViewSpinner))
-                    .transform(new MultiTransformation<>(new CenterCrop(), new RoundedCorners(_16dp)))
-                    .listener(new RequestListener<GifDrawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<GifDrawable> target, boolean isFirstResource) {
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(GifDrawable resource, Object model, Target<GifDrawable> target, DataSource dataSource, boolean isFirstResource) {
-                            Log.d("MainActivity", "btnGlideDefault resource class: " + resource.getClass().getSimpleName());
-                            return false;
-                        }
-                    })
-                    .into(ivGlideDefault);
-        });
-        findViewById(R.id.btnFrameSequence).setOnClickListener(v -> {
-            GlideApp.with(this)
-//                    .asFrameSequence()
-                    .load(getDrawable(imageViewSpinner))
-//                    .transform(new MultiTransformation<>(new CenterCrop(), new RoundedCorners(_16dp)))
-                    .listener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            Log.d("MainActivity", "btnFrameSequence resource class: " + resource.getClass().getSimpleName());
-                            return false;
-                        }
-                    })
-                    .into(ivFrameSequence);
-        });
+        setupRecyclerView();
     }
 
-    private void updateImageViewSize(double size, ImageView... imageViews) {
-        for (ImageView imageView: imageViews) {
-            ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
-            layoutParams.width = (int) size;
-            layoutParams.height = (int) size;
-            imageView.setLayoutParams(layoutParams);
+    private void setupRecyclerView() {
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new MainAdapter(this));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_network_image) {
+            startActivity(new Intent(this, NetworkImageActivity.class));
+        }
+        return true;
+    }
+}
+
+class MainAdapter extends RecyclerView.Adapter<MainAdapter.Holder> {
+
+    private final Context context;
+    private final List<ImageModel> modelList = new ArrayList<>();
+
+    {
+        modelList.add(new ImageModel(R.drawable.gif_336x336, "gif图可完美展示，也完美支持transform", 336, 336));
+        modelList.add(new ImageModel(R.drawable.webp_144x144, "webp动图Glide默认不支持，使用FS后可以支持", 144, 144));
+        modelList.add(new ImageModel(R.drawable.gif_144x144, "上面webp动图的gif版本，都可以支持", 144, 144));
+        modelList.add(new ImageModel(R.drawable.webp_990x1050, "webp动图Glide默认不支持，使用FS后可以支持", 990, 1050));
+    }
+
+    MainAdapter(Context context) {
+        this.context = context;
+    }
+
+    @NonNull
+    @Override
+    public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new Holder(LayoutInflater.from(context).inflate(R.layout.recycler_item_main, parent, false));
+    }
+
+    @Override
+    public int getItemCount() {
+        return modelList.size();
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull Holder holder, int position) {
+        ImageModel imageModel = modelList.get(position);
+        String text = context.getResources().getResourceEntryName(imageModel.resId) + "\n" + imageModel.desc;
+        holder.tvImageUrl.setText(text);
+
+        loadImage(imageModel, 1.0f, holder.ivGlideBuiltin, holder.ivFs);
+        loadImage(imageModel, 0.5f, holder.ivGlideBuiltinSmall, holder.ivFsSmall);
+//        loadImage(imageModel, 2.0f, holder.ivGlideBuiltinBig, holder.ivFsBig);
+    }
+
+    private void loadImage(ImageModel imageModel, float scale, ImageView glideBuiltin, ImageView fs) {
+        int width = (int) (imageModel.width * scale);
+        int height = (int) (imageModel.height * scale);
+
+        updateViewSize(glideBuiltin, width, height);
+        updateViewSize(fs, width, height);
+
+        GlideApp.with(context)
+                .asGif()
+                .load(imageModel.resId)
+                .transform(new MultiTransformation<>(new CenterCrop(), new RoundedCorners(32)))
+                .into(glideBuiltin);
+
+        GlideApp.with(context)
+                .asFrameSequence()
+                .load(imageModel.resId)
+                .transform(new MultiTransformation<>(new CenterCrop(), new RoundedCorners(32)))
+                .into(fs);
+    }
+
+    private void updateViewSize(View view, int width, int height) {
+        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+        layoutParams.width = width;
+        layoutParams.height = height;
+        view.setLayoutParams(layoutParams);
+    }
+
+    static class Holder extends RecyclerView.ViewHolder {
+
+        TextView tvImageUrl;
+
+        ImageView ivGlideBuiltin;
+        ImageView ivFs;
+
+        ImageView ivGlideBuiltinSmall;
+        ImageView ivFsSmall;
+
+        ImageView ivGlideBuiltinBig;
+        ImageView ivFsBig;
+
+        public Holder(@NonNull View itemView) {
+            super(itemView);
+            tvImageUrl = itemView.findViewById(R.id.tvImageUrl);
+            ivGlideBuiltin = itemView.findViewById(R.id.ivGlideBuiltin);
+            ivFs = itemView.findViewById(R.id.ivFs);
+            ivGlideBuiltinSmall = itemView.findViewById(R.id.ivGlideBuiltinSmall);
+            ivFsSmall = itemView.findViewById(R.id.ivFsSmall);
+            ivGlideBuiltinBig = itemView.findViewById(R.id.ivGlideBuiltinBig);
+            ivFsBig = itemView.findViewById(R.id.ivFsBig);
         }
     }
+}
 
-    private int getDrawable(Spinner spinner) {
-        switch (spinner.getSelectedItemPosition()) {
-            case 0:
-                return R.drawable.aaa;
-            case 1:
-                return R.drawable.aaa_webp;
-            case 2:
-                return R.drawable.bbb;
-            default:
-                return R.drawable.native_crash_webp;
-        }
-    }
+class ImageModel {
+    public int resId;
+    public String desc;
+    public int width;
+    public int height;
 
-    public void jumpToAnotherActivity(View view) {
-        startActivity(new Intent(this, ConstraintLayoutActivity.class));
+    public ImageModel(int resId, String desc, int width, int height) {
+        this.resId = resId;
+        this.desc = desc;
+        this.width = width;
+        this.height = height;
     }
 }
