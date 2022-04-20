@@ -111,6 +111,9 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.Holder> {
 
         GlideApp.with(context)
                 .asFrameSequence()
+                // 控制播放次数
+//                .setLoopBehavior(FrameSequenceDrawable.LOOP_FINITE)
+//                .setLoopCount(2)
                 .load(imageModel.resId)
                 .transform(new MultiTransformation<>(new CenterCrop(), new RoundedCorners(32)))
                 .into(fs);
