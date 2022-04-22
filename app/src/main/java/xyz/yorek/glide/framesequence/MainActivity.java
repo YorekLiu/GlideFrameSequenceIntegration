@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.MultiTransformation;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
@@ -90,8 +91,9 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.Holder> {
                 .transform(new MultiTransformation<>(new CenterCrop(), new RoundedCorners(32)))
                 .into(glideBuiltin);
 
-        GlideApp.with(context)
-                .asFrameSequence()
+//        GlideApp.with(context)
+        Glide.with(context)
+//                .asFrameSequence()
                 // 控制播放次数
 //                .setLoopBehavior(FrameSequenceDrawable.LOOP_FINITE)
 //                .setLoopCount(2)

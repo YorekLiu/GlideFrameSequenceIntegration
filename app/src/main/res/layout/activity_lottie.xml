@@ -21,6 +21,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="LottieAnimationView实现"
+            app:layout_constraintTop_toTopOf="@id/lottie"/>
 
         <ImageView
             android:id="@+id/glideLocal"
@@ -31,6 +37,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/lottie" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Glide + ImageView加载本地json"
+            app:layout_constraintTop_toTopOf="@id/glideLocal"/>
 
         <ImageView
             android:id="@+id/glideRemote"
@@ -41,5 +53,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/glideLocal" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Glide + ImageView加载url"
+            app:layout_constraintTop_toTopOf="@id/glideRemote"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
