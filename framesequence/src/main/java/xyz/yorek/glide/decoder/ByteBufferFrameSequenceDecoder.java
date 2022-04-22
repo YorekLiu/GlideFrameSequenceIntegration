@@ -24,7 +24,7 @@ import xyz.yorek.glide.framesequence.FrameSequenceOptions;
 
 public class ByteBufferFrameSequenceDecoder implements ResourceDecoder<ByteBuffer, FrameSequenceDrawable> {
 
-    public static boolean DEBUG = false;
+    private static boolean DEBUG = false;
 
     private static final String TAG = ByteBufferFrameSequenceDecoder.class.getSimpleName();
     private final List<ImageHeaderParser> parsers;
@@ -68,6 +68,7 @@ public class ByteBufferFrameSequenceDecoder implements ResourceDecoder<ByteBuffe
         // FIXME delete me after supporting webp downsample
         boolean isAnimatedWebp = AnimatedWebpHeaderParser.isAnimatedWebpType(AnimatedWebpHeaderParser.getType(source));
         source.rewind();
+//        isAnimatedWebp = false;
 
         FrameSequence frameSequence = FrameSequence.decodeByteBuffer(source);
         if (frameSequence == null) {

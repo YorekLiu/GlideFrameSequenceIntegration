@@ -1,6 +1,5 @@
 plugins {
     id 'com.android.library'
-    id 'maven'
 }
 
 android {
@@ -34,15 +33,11 @@ android {
         }
     }
 
-    if (GLIDE_V480.toBoolean()) {
-        sourceSets.main.java.srcDirs += 'src/main/pre480'
-    } else {
-        sourceSets.main.java.srcDirs += 'src/main/490'
-    }
+    sourceSets.main.java.srcDirs += 'src/main/490'
 }
 
 dependencies {
-    def glideVersion = GLIDE_V480.toBoolean() ? "4.8.0" : "4.11.0"
+    def glideVersion = "4.11.0"
     compileOnly "com.github.bumptech.glide:glide:$glideVersion"
     annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
 }
@@ -50,29 +45,3 @@ dependencies {
 //if (PUBLISH.toBoolean()) {
 //    apply from: "${rootProject.projectDir}/gradle/upload.gradle"
 //}
-
-if (PUBLISH_LOCAL) {
-    Properties properties = new Properties()
-    try {
-        properties.load(project.rootProject.file('local.properties').newDataInputStream())
-    } catch (Exception e) {
-        println("load local properties failed msg:${e.message}")
-    }
-
-    def localRepoUrl = properties.getProperty('LOCAL_REPO_URL')
-    def localUserName = properties.getProperty('ARTIFACTORY_USER_NAME')
-    def localPwd = properties.getProperty('ARTIFACTORY_PASSWORD')
-    def localGroupId = properties.getProperty('GROUPID')
-    def localArtifactId = properties.getProperty('ARTIFACTID')
-
-    uploadArchives {
-        repositories.mavenDeployer {
-            repository(url: localRepoUrl) {
-                authentication(userName: localUserName, password: localPwd)
-                pom.groupId = localGroupId
-                pom.artifactId = localArtifactId
-                pom.version = VERSION
-            }
-        }
-    }
-}

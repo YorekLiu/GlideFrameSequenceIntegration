@@ -1,3 +1,5 @@
+rootProject.name = "GlideFrameSequenceIntegration"
+
 include ':framesequence'
 include ':app'
-rootProject.name = "GlideFrameSequenceIntegration"
+include ':lottie'
