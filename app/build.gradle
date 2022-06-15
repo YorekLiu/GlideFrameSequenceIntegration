@@ -39,8 +39,9 @@ android {
 }
 
 dependencies {
-    if (PUBLISH.toBoolean()) {
-        implementation "com.github.YorekLiu:GlideFrameSequenceIntegration:$VERSION"
+    if (PUBLISH.toBoolean() || PUBLISH_LOCAL.toBoolean()) {
+        implementation "com.github.YorekLiu.GlideFrameSequenceIntegration:framesequence:${VERSION}"
+        implementation "com.github.YorekLiu.GlideFrameSequenceIntegration:lottie:${VERSION}"
     } else {
         implementation project(':framesequence')
         implementation project(':lottie')
